@@ -1,5 +1,6 @@
 /* ==========================================================================
    SUPER SUDOKU ARCADE - RETRO CABINET & CRT MASTER STYLESHEET
+   Version: 1.1.0 | Created by Marc Bailey 2026
    ========================================================================== */
 
 /* --- 0. Font Imports --- */
@@ -14,7 +15,7 @@
   --dark-bg: #0b1320;
 }
 
-/* --- 1. Global Reset & Body Setup --- */
+/* --- 1. Global Reset & Body Setup (Reduced Top & Bottom Padding) --- */
 *,
 *::before,
 *::after {
@@ -38,6 +39,7 @@ html, body {
   justify-content: center;
   overflow: hidden;
   position: relative;
+  padding: 2px 0; /* Minimized vertical padding for max screen real estate */
 }
 
 /* ==========================================================================
@@ -52,13 +54,12 @@ body::after {
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
               radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.6) 100%);
   background-size: 100% 4px, 100% 100%;
-  z-index: 30; /* CRT Phosphor/Scanline layer - sits beneath Glass Notes (z-index: 95) */
-  pointer-events: none; /* Allows clicks to pass through to buttons underneath */
+  z-index: 30; /* CRT Phosphor/Scanline layer */
+  pointer-events: none;
   opacity: 0.85;
   animation: crtFlicker 0.15s infinite;
 }
 
-/* Subtle CRT Phosphor Screen Flicker */
 @keyframes crtFlicker {
   0% { opacity: 0.82; }
   50% { opacity: 0.88; }
@@ -72,14 +73,14 @@ body::after {
   height: 100vh;
   height: 100dvh;
   max-height: 850px;
-  padding: 12px;
+  padding: 4px 10px; /* Reduced vertical padding */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   position: relative;
   background-color: #020205;
-  gap: 8px;
+  gap: 4px; /* Tight compact vertical spacing */
 }
 
 /* --- 4. HUD Header & Stat Displays --- */
@@ -87,7 +88,7 @@ body::after {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 
 .hud {
@@ -96,20 +97,74 @@ body::after {
   align-items: center;
   width: 100%;
   background: #0d0b18;
-  border: 2px solid #2de2e6;
   border-radius: 6px;
-  padding: 8px 12px;
-  box-shadow: 0 0 10px rgba(45, 226, 230, 0.2), inset 0 0 8px rgba(0,0,0,0.8);
+  padding: 4px 8px;
 }
 
-.top-hud-row { margin-bottom: 2px; }
-.clock-group { display: flex; align-items: center; gap: 8px; }
-.hi-score-label { color: #f15bb5; font-size: 11px; }
-.hi-score-val { color: #f7ede2; }
+/* Border Removed from top-hud-row and stats-hud-row */
+.top-hud-row {
+  border: none !important;
+  box-shadow: none !important;
+  margin-bottom: 0px;
+}
 
-.hud-element { display: flex; flex-direction: column; flex: 1; }
-.strike-element { text-align: center; align-items: center; }
-.multiplier-element { text-align: right; }
+.stats-hud-row {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.clock-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hi-score-label {
+  color: #f15bb5;
+  font-size: 11px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.hi-score-label:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.hi-score-val {
+  color: #f7ede2;
+}
+
+.hud-element {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.player-element {
+  cursor: pointer;
+}
+
+.player-name-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.player-name-label:hover {
+  color: #ff9f1c;
+  text-shadow: 0 0 6px #ff9f1c;
+}
+
+.strike-element {
+  text-align: center;
+  align-items: center;
+}
+
+.multiplier-element {
+  text-align: right;
+}
 
 .label {
   font-size: 10px;
@@ -123,34 +178,38 @@ body::after {
   font-size: 18px;
   font-weight: bold;
   color: #f7ede2;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-/* RED 7-SEGMENT DIGITAL LED CLOCK */
+/* ENLARGED RED 7-SEGMENT DIGITAL LED CLOCK */
 .digital-clock {
   font-family: 'VT323', 'Courier New', monospace;
-  font-size: 26px;
+  font-size: 34px; /* Enlarged for instant readability */
   font-weight: bold;
+  line-height: 1;
   color: #ff003c;
   letter-spacing: 2px;
   background-color: #05020a;
   padding: 2px 8px;
   border-radius: 4px;
   border: 1px solid #ff003c;
-  text-shadow: 0 0 4px #ff003c, 0 0 10px rgba(255, 0, 60, 0.7);
+  text-shadow: 0 0 6px #ff003c, 0 0 14px rgba(255, 0, 60, 0.8);
   box-shadow: inset 0 0 8px rgba(255, 0, 60, 0.3), 0 0 8px rgba(255, 0, 60, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .digital-clock.danger-pulse {
   color: #ff0000 !important;
   border-color: #ff0000 !important;
-  text-shadow: 0 0 6px #ff0000, 0 0 15px #ff0000 !important;
+  text-shadow: 0 0 8px #ff0000, 0 0 20px #ff0000 !important;
   animation: ledPulse 0.4s infinite alternate;
 }
 
 @keyframes ledPulse {
   from { opacity: 1; transform: scale(1); }
-  to { opacity: 0.2; transform: scale(0.96); }
+  to { opacity: 0.3; transform: scale(0.96); }
 }
 
 .hud-btn-group {
@@ -163,7 +222,7 @@ body::after {
   background: #0d0b18;
   border: 1px solid #2de2e6;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   padding: 4px 8px;
   color: #f7ede2;
@@ -171,6 +230,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
 }
 
 .hud-icon-btn:active {
@@ -178,20 +238,15 @@ body::after {
   box-shadow: 0 1px 0 #008b8b;
 }
 
-.hud-quit-btn {
+.hud-menu-btn {
   font-family: inherit;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   letter-spacing: 1px;
-  color: #ff003c !important;
-  border-color: #ff003c !important;
-  box-shadow: 0 3px 0 #a00026 !important;
-  padding: 4px 6px;
-}
-
-.hud-quit-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #a00026 !important;
+  color: #2de2e6 !important;
+  border-color: #2de2e6 !important;
+  box-shadow: 0 3px 0 #008b8b !important;
+  padding: 4px 8px;
 }
 
 .floating-score {
@@ -215,34 +270,14 @@ body::after {
   100% { opacity: 0; transform: translate(-50%, -28px) scale(0.9); }
 }
 
-
-/* --- 5. Combo Bar & Multipliers --- */
-.timer-container {
-  width: 100%;
-  height: 12px;
-  background: #0d0b18;
-  border: 2px solid #2de2e6;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: inset 0 0 5px #000;
-}
-
-.timer-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #2de2e6, #f15bb5);
-  box-shadow: 0 0 8px #f15bb5;
-  transition: width 0.03s linear;
-}
-
 .combo-value.mult-2 { color: #ff9f1c; text-shadow: 0 0 6px #ff9f1c; }
 .combo-value.mult-3 { color: #f15bb5; text-shadow: 0 0 6px #f15bb5; }
 .combo-value.mult-4 { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
 
-.strike-tracker { display: flex; gap: 6px; align-items: center; justify-content: center; margin-top: 2px; }
+.strike-tracker { display: flex; gap: 6px; align-items: center; justify-content: center; margin-top: 1px; }
 .strike-box {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid #ff003c;
   border-radius: 4px;
   background: #0d0b18;
@@ -250,7 +285,7 @@ body::after {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   color: #ff003c;
   box-shadow: inset 0 0 4px #000;
 }
@@ -258,7 +293,7 @@ body::after {
 .strike-box.active { background: #ff003c; color: #020205; box-shadow: 0 0 10px #ff003c; }
 
 /* ==========================================================================
-   6. 9x9 SUDOKU BOARD GRID (RIGID 1:1 SQUARE)
+   5. 9x9 SUDOKU BOARD GRID (RIGID 1:1 SQUARE)
    ========================================================================== */
 
 .board, #sudoku-board {
@@ -290,12 +325,10 @@ body::after {
   transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
 }
 
-/* Subtle checkerboard tint for alternating 3x3 blocks */
 .cell.box-alt {
   background-color: #120e24;
 }
 
-/* 3x3 Box Boundary Dividers */
 .cell:nth-child(9n+3),
 .cell:nth-child(9n+6),
 .cell.box-boundary-right {
@@ -324,7 +357,6 @@ body::after {
 .cell.locked.player { color: #2de2e6 !important; text-shadow: 0 0 6px #2de2e6 !important; }
 .cell.error { background-color: #ff003c !important; color: #ffffff !important; }
 
-/* Cell Content Structure */
 .cell-digit {
   font-size: 22px;
   font-weight: bold;
@@ -337,7 +369,6 @@ body::after {
   display: none;
 }
 
-/* Glass Pencil Notes: Topmost Layer Above CRT Monitor Glass */
 .cell-notes {
   position: absolute;
   top: 0;
@@ -348,7 +379,7 @@ body::after {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   pointer-events: none;
-  z-index: 95; /* Sits proudly ABOVE the CRT Scanlines (z-index: 30) */
+  z-index: 95;
   padding: 1px;
   box-sizing: border-box;
 }
@@ -365,7 +396,7 @@ body::after {
   font-size: 13px;
   font-weight: bold;
   line-height: 1;
-  color: #ffff33 !important; /* Fluorescent arcade glass grease marker */
+  color: #ffff33 !important;
   text-shadow: 0 0 4px #ffff33, 0 0 8px rgba(255, 255, 51, 0.95), 1px 1px 1px rgba(0,0,0,0.8) !important;
   opacity: 0;
   visibility: hidden;
@@ -378,7 +409,7 @@ body::after {
 }
 
 /* ==========================================================================
-   7. EXPERT FOG & ROTATING RADAR MODES
+   6. EXPERT FOG & ROTATING RADAR MODES
    ========================================================================== */
 
 #sudoku-board.expert-fog .cell,
@@ -419,7 +450,6 @@ body::after {
   border-color: #ffffff !important;
 }
 
-/* --- DYNAMIC RADAR MODE & CONIC OVERLAY --- */
 #sudoku-board.radar-mode {
   border-color: #a27ee0 !important;
   box-shadow: 0 0 24px rgba(162, 126, 224, 0.5) !important;
@@ -444,7 +474,6 @@ body::after {
   border-bottom: 3px solid rgba(162, 126, 224, 0.75) !important;
 }
 
-/* State 1: Leading Ping Edge */
 #sudoku-board.radar-mode .cell.pre-lit {
   background-color: rgba(162, 126, 224, 0.15) !important;
   border-color: rgba(162, 126, 224, 0.5) !important;
@@ -452,7 +481,6 @@ body::after {
   text-shadow: 0 0 4px #a27ee0 !important;
 }
 
-/* State 2: Main Beam Illumination */
 #sudoku-board.radar-mode .cell.lit {
   background-color: rgba(162, 126, 224, 0.32) !important;
   border-color: #a27ee0 !important;
@@ -470,7 +498,6 @@ body::after {
   outline-offset: -2px;
 }
 
-/* Radar Rotating Conic Overlay */
 .radar-overlay {
   position: absolute;
   top: 0;
@@ -520,7 +547,7 @@ body::after {
 }
 
 /* ==========================================================================
-   8. 3D TACTILE ARCADE NUMPAD & GLASS PENCIL CONTROLS
+   7. 3D TACTILE ARCADE NUMPAD & GLASS PENCIL CONTROLS
    ========================================================================== */
 
 .action-bar {
@@ -528,7 +555,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 4px 0 2px 0;
+  margin: 2px 0;
 }
 
 .action-bar-btn {
@@ -538,10 +565,10 @@ body::after {
   border-bottom: 4px solid #008b8b;
   color: #2de2e6;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   letter-spacing: 1px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
@@ -570,7 +597,7 @@ body::after {
 .numpad {
   display: grid !important;
   grid-template-columns: repeat(5, 1fr) !important;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
   margin-top: auto;
 }
@@ -578,12 +605,12 @@ body::after {
 .num-btn {
   background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
   border: 2px solid #2de2e6;
-  border-bottom: 5px solid #008b8b; /* 3D Raised Edge Depth */
+  border-bottom: 5px solid #008b8b;
   color: #f7ede2;
   font-family: inherit;
   font-size: 20px;
   font-weight: bold;
-  padding: 10px 0;
+  padding: 8px 0;
   border-radius: 8px;
   cursor: pointer;
   position: relative;
@@ -595,7 +622,6 @@ body::after {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* 3D Mechanical Button Depress Effect */
 .num-btn:active {
   transform: translateY(3px);
   border-bottom-width: 2px;
@@ -606,7 +632,7 @@ body::after {
 
 .num-btn.action-btn {
   border-color: #ff003c;
-  border-bottom: 5px solid #a00026; /* 3D Red Raised Edge Depth */
+  border-bottom: 5px solid #a00026;
   color: #ff003c;
   font-size: 11px;
   letter-spacing: -0.5px;
@@ -635,18 +661,244 @@ body::after {
   line-height: 1;
 }
 
+/* ENLARGED NUMPAD BADGE (Noticeably bigger & high contrast) */
 .badge {
   position: absolute;
-  top: 3px;
-  right: 5px;
-  font-size: 10px;
-  color: #f15bb5;
-  font-weight: bold;
+  top: 2px;
+  right: 4px;
+  font-size: 13px; /* Enlarged from 10px */
+  font-weight: 900;
+  color: #ff4d94;
   line-height: 1;
+  background: rgba(13, 11, 24, 0.92);
+  border: 1px solid rgba(241, 91, 181, 0.7);
+  border-radius: 4px;
+  padding: 2px 4px;
+  min-width: 16px;
+  text-align: center;
+  text-shadow: 0 0 4px #ff4d94, 1px 1px 2px #000;
+  box-shadow: 0 0 6px rgba(255, 77, 148, 0.4);
 }
 
 /* ==========================================================================
-   9. MODAL OVERLAYS & 3D TITLE BUTTONS
+   8. ARCADE POP-OUT MENU DRAWER & BACKDROP
+   ========================================================================== */
+
+.menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(2, 2, 5, 0.75);
+  backdrop-filter: blur(3px);
+  z-index: 150;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.menu-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arcade-menu-drawer {
+  position: fixed;
+  top: 0;
+  right: -340px;
+  width: 320px;
+  max-width: 88vw;
+  height: 100%;
+  background: #090714;
+  border-left: 3px solid #2de2e6;
+  box-shadow: -10px 0 35px rgba(45, 226, 230, 0.4), inset 0 0 25px rgba(0, 0, 0, 0.95);
+  z-index: 160;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arcade-menu-drawer.active {
+  right: 0;
+}
+
+.menu-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid rgba(45, 226, 230, 0.3);
+  padding-bottom: 12px;
+}
+
+.menu-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-neon-tag {
+  font-size: 10px;
+  color: #ff9f1c;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.menu-title {
+  font-size: 20px;
+  color: #2de2e6;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px #2de2e6;
+  margin: 0;
+}
+
+.menu-close-btn {
+  background: #181528;
+  border: 1px solid #ff003c;
+  color: #ff003c;
+  font-size: 16px;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(255, 0, 60, 0.3);
+}
+
+.menu-drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+  overflow-y: auto;
+}
+
+.menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-section-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #f15bb5;
+  font-weight: bold;
+}
+
+.menu-player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #120e24;
+  border: 1px solid #2de2e6;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.menu-player-name {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.menu-sub-btn {
+  background: #ff9f1c;
+  color: #020205;
+  border: none;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(255, 159, 28, 0.5);
+}
+
+.menu-action-btn {
+  background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
+  border: 2px solid #2de2e6;
+  border-bottom: 4px solid #008b8b;
+  color: #f7ede2;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.05s ease;
+}
+
+.menu-action-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.menu-btn-gold {
+  border-color: #ffb703;
+  border-bottom-color: #aa7700;
+  color: #ffb703;
+}
+
+.menu-btn-danger {
+  border-color: #ff003c;
+  border-bottom-color: #a00026;
+  color: #ff003c;
+}
+
+.menu-resume-btn {
+  background: #2de2e6;
+  color: #020205;
+  border: none;
+  border-bottom: 4px solid #008b8b;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 6px;
+  box-shadow: 0 0 14px rgba(45, 226, 230, 0.4);
+}
+
+.menu-resume-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.menu-drawer-footer {
+  border-top: 2px solid rgba(45, 226, 230, 0.3);
+  padding-top: 10px;
+  text-align: center;
+}
+
+.footer-credit-line {
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 9px;
+  color: #ff9f1c;
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px #ff9f1c;
+  margin-bottom: 4px;
+}
+
+.footer-version-tag {
+  font-size: 10px;
+  color: #2de2e6;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   9. MODAL OVERLAYS & ARCADE CARDS
    ========================================================================== */
 
 .win-overlay {
@@ -659,7 +911,7 @@ body::after {
   align-items: center;
   justify-content: center;
   z-index: 100;
-  padding: 20px;
+  padding: 16px;
 }
 
 .win-overlay.active { display: flex; }
@@ -670,7 +922,7 @@ body::after {
   color: #2de2e6;
   text-shadow: 4px 4px 0px #f15bb5;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .game-over-title { color: #ff003c; text-shadow: 4px 4px 0px #0b1026; }
@@ -682,9 +934,9 @@ body::after {
 .confirm-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 15px;
-  width: 80%;
+  gap: 10px;
+  margin-top: 12px;
+  width: 85%;
   max-width: 300px;
 }
 
@@ -707,7 +959,7 @@ body::after {
   border-bottom: 5px solid #008b8b;
   color: #2de2e6;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   padding: 10px 15px;
   border-radius: 8px;
@@ -729,6 +981,12 @@ body::after {
   border-bottom-color: #008b8b !important;
 }
 
+.btn-leaderboard {
+  color: #ffb703 !important;
+  border-color: #ffb703 !important;
+  border-bottom-color: #aa7700 !important;
+}
+
 .btn-quit-gameover {
   color: #ff003c !important;
   border-color: #ff003c !important;
@@ -746,8 +1004,280 @@ body::after {
 .btn-expert { color: #b5179e !important; border-color: #b5179e !important; border-bottom-color: #660055 !important; }
 .btn-radar { color: #2de2e6 !important; border-color: #2de2e6 !important; border-bottom-color: #008b8b !important; }
 
+.overlay-score-summary {
+  font-size: 15px;
+  font-weight: bold;
+  color: #ffb703;
+  margin: 4px 0 8px 0;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px #ffb703;
+}
+
+/* Title Screen Styling */
+.title-player-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(13, 11, 24, 0.9);
+  border: 1px solid #ff9f1c;
+  box-shadow: 0 0 10px rgba(255, 159, 28, 0.3);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  margin: 8px 0 4px 0;
+  transition: all 0.15s ease;
+}
+
+.title-player-card:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 15px rgba(255, 159, 28, 0.6);
+}
+
+.player-tag {
+  font-size: 10px;
+  color: #ff9f1c;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
+.player-current-name {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.player-edit-icon {
+  font-size: 12px;
+  color: #2de2e6;
+}
+
+.title-bottom-actions {
+  margin-top: 10px;
+  width: 85%;
+  max-width: 300px;
+}
+
+.arcade-title-btn {
+  width: 100%;
+  background: #181528;
+  border: 2px solid #ffb703;
+  border-bottom: 4px solid #aa7700;
+  color: #ffb703;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  box-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+}
+
+.arcade-title-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.title-footer-credit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.credit-author {
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 9px;
+  color: #ff9f1c;
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px rgba(255, 159, 28, 0.8);
+}
+
+.credit-version {
+  font-size: 10px;
+  color: #2de2e6;
+  letter-spacing: 1.5px;
+  opacity: 0.85;
+}
+
+/* Modals: Arcade Cards */
+.arcade-modal-card {
+  background: #090714;
+  border: 3px solid #2de2e6;
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(45, 226, 230, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  width: 90%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 105;
+}
+
+.modal-neon-title {
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: 2px;
+}
+
+.name-input-wrapper {
+  width: 100%;
+  margin: 14px 0;
+}
+
+.name-input-wrapper input {
+  width: 100%;
+  background: #020205;
+  border: 2px solid #ff9f1c;
+  border-radius: 6px;
+  color: #ff9f1c;
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 13px;
+  padding: 10px 12px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  outline: none;
+  box-shadow: 0 0 12px rgba(255, 159, 28, 0.4), inset 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+.name-input-wrapper input:focus {
+  border-color: #2de2e6;
+  color: #2de2e6;
+  box-shadow: 0 0 16px rgba(45, 226, 230, 0.6);
+}
+
+.name-modal-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Leaderboard Modal Styling */
+.leaderboard-card {
+  max-width: 440px;
+}
+
+.leaderboard-header {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.leaderboard-title {
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #ffb703;
+  text-shadow: 0 0 10px #ffb703, 3px 3px 0px #000;
+  margin-bottom: 2px;
+}
+
+.leaderboard-subtitle {
+  font-size: 9px;
+  color: #2de2e6;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.leaderboard-tabs {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.tab-btn {
+  flex: 1;
+  background: #120e24;
+  border: 1px solid #444;
+  color: #aaa;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 6px 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease;
+}
+
+.tab-btn.active {
+  background: #2de2e6;
+  color: #020205;
+  border-color: #2de2e6;
+  box-shadow: 0 0 8px rgba(45, 226, 230, 0.6);
+}
+
+.leaderboard-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 14px 0;
+  min-height: 170px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #120e24;
+  border-left: 3px solid #2de2e6;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.leaderboard-row.rank-1 {
+  border-left-color: #ffb703;
+  background: rgba(255, 183, 3, 0.12);
+}
+
+.leaderboard-row.rank-2 {
+  border-left-color: #e0e0e0;
+  background: rgba(224, 224, 224, 0.1);
+}
+
+.leaderboard-row.rank-3 {
+  border-left-color: #cd7f32;
+  background: rgba(205, 127, 50, 0.1);
+}
+
+.rank-badge {
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 10px;
+  width: 32px;
+  color: #ff9f1c;
+}
+
+.rank-1 .rank-badge { color: #ffb703; }
+.rank-2 .rank-badge { color: #ffffff; }
+.rank-3 .rank-badge { color: #cd7f32; }
+
+.leader-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: bold;
+  color: #f7ede2;
+  letter-spacing: 1px;
+}
+
+.leader-score {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: #2de2e6;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.leaderboard-actions {
+  width: 100%;
+}
+
 /* ==========================================================================
-   SUPER SUDOKU ARCADE - COMPACT STACKED HEADER LOGO (HIGH LUMINANCE)
+   10. SUPER SUDOKU ARCADE - COMPACT STACKED HEADER LOGO
    ========================================================================== */
 
 .super-sudoku-logo {
@@ -756,7 +1286,7 @@ body::after {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 28px;
+  padding: 18px 24px;
   background: var(--dark-bg);
   border: 3px solid var(--cyber-teal);
   border-radius: 8px;
@@ -768,7 +1298,6 @@ body::after {
   animation: logoPulse 3s infinite ease-in-out;
 }
 
-/* Individual Word Lines - Placed above the scanline overlay */
 .super-sudoku-logo .logo-line {
   font-family: 'Press Start 2P', cursive, monospace;
   font-weight: 900;
@@ -777,27 +1306,25 @@ body::after {
   line-height: 1; 
   display: block;
   position: relative;
-  z-index: 5; /* Ensures text stays sharply above CRT scanlines */
+  z-index: 5;
 }
 
-/* Line 1: SUPER (Vibrant Neon Orange with High Glow) */
 .super-sudoku-logo .line-super {
-  font-size: 14px;
-  letter-spacing: 5px;
-  color: #ffb703; /* Brightened neon orange */
-  margin-bottom: 10px;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: #ffb703;
+  margin-bottom: 8px;
   text-shadow: 
     0 0 6px #ffb703,
     0 0 12px var(--neon-orange),
     2px 2px 0px #000000;
 }
 
-/* Line 2: SUDOKU (Ultra-Bright Chrome/Cyber Teal Split) */
 .super-sudoku-logo .line-sudoku {
-  font-size: 24px;
-  letter-spacing: 4px;
-  margin-bottom: 10px;
-  color: #ffffff; /* High contrast fallback */
+  font-size: 22px;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  color: #ffffff;
   background: linear-gradient(
     180deg, 
     #ffffff 0%, 
@@ -815,18 +1342,16 @@ body::after {
     drop-shadow(0 0 16px rgba(46, 196, 182, 0.6));
 }
 
-/* Line 3: ARCADE (Vibrant Neon Pink with High Glow) */
 .super-sudoku-logo .line-arcade {
-  font-size: 16px;
-  letter-spacing: 6px;
-  color: #ff758f; /* Brightened neon pink */
+  font-size: 15px;
+  letter-spacing: 5px;
+  color: #ff758f;
   text-shadow: 
     0 0 6px #ff758f,
     0 0 14px var(--neon-pink),
     2px 2px 0px #000000;
 }
 
-/* CRT Scanlines Layer — Pushed behind text (z-index: 1) so it doesn't dim letters */
 .super-sudoku-logo::before {
   content: "";
   position: absolute;
@@ -836,10 +1361,9 @@ body::after {
   background: linear-gradient(rgba(11, 19, 32, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
   background-size: 100% 4px;
   pointer-events: none;
-  z-index: 1; /* Sits under the logo text (z-index: 5) */
+  z-index: 1;
 }
 
-/* Ambient Pulse Animation */
 @keyframes logoPulse {
   0%, 100% {
     box-shadow: 0 0 15px rgba(46, 196, 182, 0.4), inset 0 0 20px rgba(11, 19, 32, 0.9);
