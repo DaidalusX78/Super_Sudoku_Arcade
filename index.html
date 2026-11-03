@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="logo.css">
+  <title>GAME OVER STUDIOS</title>
+</head>
+<body>
+  
+<!-- STUDIO INTRO HOLOGRAM OVERLAY -->
+<div id="studio-intro" class="intro-overlay active">
+  <div class="intro-viewport">
+    
+    <!-- Horizon Glow Sun -->
+    <div class="horizon-glow"></div>
+
+    <!-- CRT Glitch Scanline Flash Overlay -->
+    <div class="crt-transition-flash"></div>
+
+    <!-- Dual-Logo Container (Modern -> Retro) -->
+    <div class="studio-logo-box" id="studio-logo-box">
+      
+      <!-- 1. Modern Minimalist Logo State -->
+      <div class="logo-modern">
+        <div class="modern-mark">
+          <span class="mark-block">G</span>
+          <span class="mark-block">O</span>
+        </div>
+        <h1 class="modern-title">GAME OVER</h1>
+        <p class="modern-subtitle">STUDIOS</p>
+      </div>
+
+      <!-- 2. Retro 80s Chrome/Laser Logo State -->
+      <div class="logo-retro">
+        <h1 class="studio-title">GAME OVER</h1>
+        <div class="laser-sweep-line"></div>
+        <p class="studio-subtitle">STUDIOS</p>
+
+        <!-- Arcade Play Button -->
+        <a href="sudoku.html" class="arcade-play-btn" id="play-btn">PLAY</a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<audio id="studio-intro-audio" src="media/game_over_male_voice.mp3" preload="auto"></audio>
+
+<script src="logo.js"></script>
+</body>
+</html>

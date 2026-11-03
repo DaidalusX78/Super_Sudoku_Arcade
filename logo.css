@@ -1,0 +1,426 @@
+/* ==========================================================================
+   GAME OVER STUDIOS - INTRO ANIMATION ENGINE
+   ========================================================================== */
+
+/* 1. ROOT COLOR VARIABLES & PIXEL FONT IMPORT */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --neon-orange: #ff9f1c;
+  --neon-pink: #ff4d6d;
+  --arcade-purple: #845ec2;
+  --cyber-teal: #2ec4b6;
+  --dark-bg: #0b1320;
+}
+
+/* ==========================================================================
+   ENVIRONMENT & BASE LAYOUT
+   ========================================================================== */
+
+.intro-overlay {
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100vw; 
+  height: 100vh;
+  background: var(--dark-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  overflow: hidden;
+  perspective: 600px;
+}
+
+.intro-overlay.active {
+  display: flex;
+}
+
+.intro-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+/* Glowing Horizon Sun */
+.horizon-glow {
+  position: absolute;
+  bottom: 25%;
+  width: 120%;
+  height: 180px;
+  background: radial-gradient(ellipse at center, rgba(46, 196, 182, 0.35) 0%, rgba(11, 19, 32, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Logo Box Container */
+.studio-logo-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   1. MODERN MINIMALIST LOGO STATE
+   ========================================================================== */
+
+.logo-modern {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  z-index: 10;
+  transition: opacity 0.1s;
+  pointer-events: auto;
+}
+
+.logo-modern * {
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.modern-mark {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.modern-mark .mark-block {
+  width: 40px; 
+  height: 40px;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #ffffff;
+  letter-spacing: 0;
+}
+
+.modern-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 38px;
+  font-weight: 300;
+  letter-spacing: 16px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.modern-subtitle {
+  font-family: sans-serif;
+  font-size: 11px;
+  letter-spacing: 12px;
+  color: #888888;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   2. RETRO 80s ARCADE CHROME LOGO STATE
+   ========================================================================== */
+
+.logo-retro {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  z-index: 1;
+  visibility: hidden;
+}
+
+/* Heavy 80s Blocky Pixel Font Title */
+.studio-title {
+  position: relative;
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+  text-align: center;
+  background: linear-gradient(
+    180deg, 
+    #ffffff 0%, 
+    var(--cyber-teal) 30%, 
+    var(--arcade-purple) 48%, 
+    var(--dark-bg) 50%, 
+    var(--neon-pink) 52%, 
+    #ffffff 80%, 
+    var(--neon-orange) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 15px rgba(46, 196, 182, 0.8));
+}
+
+/* Chromatic Aberration RGB Glitch Offsets */
+.studio-title::before, 
+.studio-title::after {
+  content: "GAME OVER";
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  letter-spacing: 4px; 
+  opacity: 0; 
+  pointer-events: none;
+}
+
+.studio-title::before { 
+  color: var(--cyber-teal); 
+  -webkit-text-fill-color: var(--cyber-teal); 
+  clip-path: inset(20% 0 30% 0); 
+  z-index: -1; 
+}
+
+.studio-title::after { 
+  color: var(--neon-pink); 
+  -webkit-text-fill-color: var(--neon-pink); 
+  clip-path: inset(50% 0 10% 0); 
+  z-index: -2; 
+}
+
+/* Neon Orange Laser Scan Sweep Line */
+.laser-sweep-line {
+  position: absolute;
+  top: 0; 
+  left: -10%; 
+  width: 120%; 
+  height: 3px;
+  background: #ffffff;
+  box-shadow: 
+    0 0 4px #ffffff, 
+    0 0 10px var(--neon-orange), 
+    0 0 20px var(--neon-orange), 
+    0 0 40px var(--neon-orange);
+  opacity: 0; 
+  pointer-events: none; 
+  z-index: 15;
+}
+
+/* Retro Pixel Subtitle */
+.studio-subtitle {
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 14px; 
+  letter-spacing: 10px; 
+  color: var(--cyber-teal); 
+  text-shadow: 0 0 10px var(--cyber-teal); 
+  margin-top: 18px;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   3. ARCADE "PLAY" BUTTON STYLES
+   ========================================================================== */
+
+.arcade-play-btn {
+  margin-top: 36px;
+  padding: 14px 36px;
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-size: 18px;
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: var(--dark-bg);
+  border: 3px solid var(--cyber-teal);
+  border-radius: 4px;
+  box-shadow: 
+    0 0 10px var(--cyber-teal),
+    inset 0 0 12px rgba(46, 196, 182, 0.3);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  pointer-events: auto;
+}
+
+/* Scanlines on Button Interior */
+.arcade-play-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(rgba(11, 19, 32, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Hover State: Hot Neon Pink Shift & Scale */
+.arcade-play-btn:hover {
+  color: var(--dark-bg);
+  background: var(--neon-pink);
+  border-color: #ffffff;
+  box-shadow: 
+    0 0 20px var(--neon-pink),
+    0 0 40px var(--neon-orange);
+  transform: scale(1.08);
+}
+
+/* Active Press State */
+.arcade-play-btn:active {
+  transform: scale(0.96);
+}
+
+/* ==========================================================================
+   4. CRT OVERLAY & ANIMATION KEYFRAMES
+   ========================================================================== */
+
+/* Scoped CRT Scanlines Overlay on Retro Logo */
+.logo-retro::before {
+  content: "";
+  position: absolute;
+  top: -25px; 
+  left: -25px;
+  right: -25px; 
+  bottom: -25px;
+  background: 
+    linear-gradient(rgba(11, 19, 32, 0) 50%, rgba(11, 19, 32, 0.55) 50%),
+    linear-gradient(90deg, rgba(255, 77, 109, 0.03), rgba(46, 196, 182, 0.02), rgba(132, 94, 194, 0.03));
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 20;
+  opacity: 0;
+  border-radius: 8px;
+  display: none;
+}
+
+.crt-transition-flash {
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+@keyframes crtGlitchBomb {
+  0% { opacity: 0; transform: scaleY(1); }
+  20% { opacity: 1; background: var(--cyber-teal); transform: scaleY(0.05) skewX(50deg); }
+  40% { opacity: 0.8; background: var(--neon-pink); transform: scaleY(0.8) skewX(-30deg); }
+  60% { opacity: 1; background: #ffffff; transform: scaleY(0.02); }
+  80% { opacity: 0.5; background: var(--neon-orange); transform: scaleY(1.2); }
+  100% { opacity: 0; transform: scaleY(1); }
+}
+
+@keyframes laserSweepDown {
+  0% { top: -10%; opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { top: 110%; opacity: 0; }
+}
+
+@keyframes chromaticGlitch {
+  0%, 100% { opacity: 0; transform: translate(0); }
+  20% { opacity: 0.9; transform: translate(-5px, 2px); }
+  40% { opacity: 0.8; transform: translate(4px, -3px); }
+  60% { opacity: 0.9; transform: translate(-3px, 1px); }
+}
+
+@keyframes crtPhosphorFlicker {
+  0% { opacity: 0.85; }
+  25% { opacity: 0.95; }
+  50% { opacity: 0.80; }
+  75% { opacity: 1; }
+  100% { opacity: 0.90; }
+}
+
+@keyframes holoFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Button Fade-In & Neon Pulse */
+@keyframes btnPopIn {
+  0% { opacity: 0; transform: scale(0.6); }
+  70% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes neonGlowPulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px var(--cyber-teal), inset 0 0 10px rgba(46, 196, 182, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 22px var(--cyber-teal), inset 0 0 16px rgba(46, 196, 182, 0.6);
+  }
+}
+
+/* ==========================================================================
+   5. EXECUTION TIMELINE SEQUENCE (UPDATED FOR 4s BUTTON DELAY)
+   ========================================================================== */
+
+/* Glitch Flash (~4.1s) */
+.intro-overlay.playing .crt-transition-flash {
+  animation: crtGlitchBomb 0.35s ease-out 4.1s forwards;
+}
+
+/* Hide Modern Logo (~4.2s) */
+.intro-overlay.playing .logo-modern {
+  animation: hideModern 0.01s forwards 4.2s;
+}
+
+@keyframes hideModern {
+  to { opacity: 0; }
+}
+
+/* Reveal Retro Logo (~4.2s) */
+.intro-overlay.playing .logo-retro {
+  animation: revealRetro 0.01s forwards 4.2s;
+}
+
+@keyframes revealRetro {
+  to { 
+    opacity: 1; 
+    visibility: visible;
+  }
+}
+
+/* CRT Scanlines (~4.2s) */
+.intro-overlay.playing .logo-retro::before {
+  display: block;
+  opacity: 1;
+  animation: crtPhosphorFlicker 0.12s infinite 4.2s;
+}
+
+/* Laser Sweep (~4.4s) */
+.intro-overlay.playing .laser-sweep-line {
+  animation: laserSweepDown 0.7s cubic-bezier(0.4, 0, 0.2, 1) 4.4s forwards;
+}
+
+/* Chromatic Glitch (~4.4s) */
+.intro-overlay.playing .studio-title::before,
+.intro-overlay.playing .studio-title::after {
+  animation: chromaticGlitch 0.6s ease-in-out 4.4s;
+}
+
+/* ==========================================================================
+   UPDATED: PLAY Button reveals exactly 4 seconds AFTER retro logo (8.2s total)
+   ========================================================================== */
+.intro-overlay.playing .arcade-play-btn {
+  animation: 
+    btnPopIn 0.5s ease-out 8.2s forwards,      /* Pop-in starts at 8.2s */
+    neonGlowPulse 2s infinite 8.7s;            /* Neon pulse starts at 8.7s */
+}
+
+/* Float Animation (~4.5s) */
+.intro-overlay.playing .studio-logo-box {
+  animation: holoFloat 4s ease-in-out infinite 4.5s;
+}

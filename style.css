@@ -1,0 +1,850 @@
+/* ==========================================================================
+   SUPER SUDOKU ARCADE - RETRO CABINET & CRT MASTER STYLESHEET
+   ========================================================================== */
+
+/* --- 0. Font Imports --- */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --neon-orange: #ff9f1c;
+  --neon-pink: #ff4d6d;
+  --arcade-purple: #845ec2;
+  --cyber-teal: #2ec4b6;
+  --dark-bg: #0b1320;
+}
+
+/* --- 1. Global Reset & Body Setup --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #020205;
+  color: #f7ede2;
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   2. CRT MONITOR OVERLAY & SCANLINE SIMULATOR
+   ========================================================================== */
+
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+              radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.6) 100%);
+  background-size: 100% 4px, 100% 100%;
+  z-index: 30; /* CRT Phosphor/Scanline layer - sits beneath Glass Notes (z-index: 95) */
+  pointer-events: none; /* Allows clicks to pass through to buttons underneath */
+  opacity: 0.85;
+  animation: crtFlicker 0.15s infinite;
+}
+
+/* Subtle CRT Phosphor Screen Flicker */
+@keyframes crtFlicker {
+  0% { opacity: 0.82; }
+  50% { opacity: 0.88; }
+  100% { opacity: 0.84; }
+}
+
+/* --- 3. Main Cabinet Layout Container --- */
+.game-container {
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 850px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  background-color: #020205;
+  gap: 8px;
+}
+
+/* --- 4. HUD Header & Stat Displays --- */
+.hud-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: #0d0b18;
+  border: 2px solid #2de2e6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 0 10px rgba(45, 226, 230, 0.2), inset 0 0 8px rgba(0,0,0,0.8);
+}
+
+.top-hud-row { margin-bottom: 2px; }
+.clock-group { display: flex; align-items: center; gap: 8px; }
+.hi-score-label { color: #f15bb5; font-size: 11px; }
+.hi-score-val { color: #f7ede2; }
+
+.hud-element { display: flex; flex-direction: column; flex: 1; }
+.strike-element { text-align: center; align-items: center; }
+.multiplier-element { text-align: right; }
+
+.label {
+  font-size: 10px;
+  color: #2de2e6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f7ede2;
+  margin-top: 2px;
+}
+
+/* RED 7-SEGMENT DIGITAL LED CLOCK */
+.digital-clock {
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 26px;
+  font-weight: bold;
+  color: #ff003c;
+  letter-spacing: 2px;
+  background-color: #05020a;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #ff003c;
+  text-shadow: 0 0 4px #ff003c, 0 0 10px rgba(255, 0, 60, 0.7);
+  box-shadow: inset 0 0 8px rgba(255, 0, 60, 0.3), 0 0 8px rgba(255, 0, 60, 0.2);
+}
+
+.digital-clock.danger-pulse {
+  color: #ff0000 !important;
+  border-color: #ff0000 !important;
+  text-shadow: 0 0 6px #ff0000, 0 0 15px #ff0000 !important;
+  animation: ledPulse 0.4s infinite alternate;
+}
+
+@keyframes ledPulse {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.2; transform: scale(0.96); }
+}
+
+.hud-btn-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.hud-icon-btn {
+  background: #0d0b18;
+  border: 1px solid #2de2e6;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: #f7ede2;
+  box-shadow: 0 3px 0 #008b8b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud-icon-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #008b8b;
+}
+
+.hud-quit-btn {
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #ff003c !important;
+  border-color: #ff003c !important;
+  box-shadow: 0 3px 0 #a00026 !important;
+  padding: 4px 6px;
+}
+
+.hud-quit-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #a00026 !important;
+}
+
+.floating-score {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00ff00;
+  font-size: 13px;
+  font-weight: bold;
+  pointer-events: none;
+  animation: floatUp 0.8s ease-out forwards;
+  text-shadow: 0 0 6px #00ff00;
+  z-index: 20;
+  white-space: nowrap;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -14px) scale(1.25); }
+  100% { opacity: 0; transform: translate(-50%, -28px) scale(0.9); }
+}
+
+
+/* --- 5. Combo Bar & Multipliers --- */
+.timer-container {
+  width: 100%;
+  height: 12px;
+  background: #0d0b18;
+  border: 2px solid #2de2e6;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 0 5px #000;
+}
+
+.timer-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2de2e6, #f15bb5);
+  box-shadow: 0 0 8px #f15bb5;
+  transition: width 0.03s linear;
+}
+
+.combo-value.mult-2 { color: #ff9f1c; text-shadow: 0 0 6px #ff9f1c; }
+.combo-value.mult-3 { color: #f15bb5; text-shadow: 0 0 6px #f15bb5; }
+.combo-value.mult-4 { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
+
+.strike-tracker { display: flex; gap: 6px; align-items: center; justify-content: center; margin-top: 2px; }
+.strike-box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ff003c;
+  border-radius: 4px;
+  background: #0d0b18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #ff003c;
+  box-shadow: inset 0 0 4px #000;
+}
+
+.strike-box.active { background: #ff003c; color: #020205; box-shadow: 0 0 10px #ff003c; }
+
+/* ==========================================================================
+   6. 9x9 SUDOKU BOARD GRID (RIGID 1:1 SQUARE)
+   ========================================================================== */
+
+.board, #sudoku-board {
+  display: grid !important;
+  grid-template-columns: repeat(9, 1fr) !important;
+  grid-template-rows: repeat(9, 1fr) !important;
+  gap: 2px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #2de2e6;
+  border: 4px solid #2de2e6;
+  box-shadow: 0 0 24px rgba(45, 226, 230, 0.45);
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cell {
+  aspect-ratio: 1 / 1;
+  background-color: #0d0b18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.05);
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+/* Subtle checkerboard tint for alternating 3x3 blocks */
+.cell.box-alt {
+  background-color: #120e24;
+}
+
+/* 3x3 Box Boundary Dividers */
+.cell:nth-child(9n+3),
+.cell:nth-child(9n+6),
+.cell.box-boundary-right {
+  border-right: 3px solid #2de2e6 !important;
+}
+
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54),
+.cell.box-boundary-bottom {
+  border-bottom: 3px solid #2de2e6 !important;
+}
+
+.cell.highlighted { background-color: #1a1528; }
+.cell.box-alt.highlighted { background-color: #211c35; }
+.cell.same-number { background-color: #2a1f40; box-shadow: inset 0 0 6px #f15bb5; }
+.cell.box-alt.same-number { background-color: #32254e; box-shadow: inset 0 0 6px #f15bb5; }
+.cell.selected {
+  background-color: #f15bb5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px #f15bb5 !important;
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+.cell.given { color: #f7ede2; }
+.cell.player { color: #2de2e6; text-shadow: 0 0 5px #2de2e6; }
+.cell.locked.player { color: #2de2e6 !important; text-shadow: 0 0 6px #2de2e6 !important; }
+.cell.error { background-color: #ff003c !important; color: #ffffff !important; }
+
+/* Cell Content Structure */
+.cell-digit {
+  font-size: 22px;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 2;
+  line-height: 1;
+}
+
+.cell[data-has-value="false"] .cell-digit {
+  display: none;
+}
+
+/* Glass Pencil Notes: Topmost Layer Above CRT Monitor Glass */
+.cell-notes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  pointer-events: none;
+  z-index: 95; /* Sits proudly ABOVE the CRT Scanlines (z-index: 30) */
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.cell[data-has-value="true"] .cell-notes {
+  display: none !important;
+}
+
+.note-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
+  color: #ffff33 !important; /* Fluorescent arcade glass grease marker */
+  text-shadow: 0 0 4px #ffff33, 0 0 8px rgba(255, 255, 51, 0.95), 1px 1px 1px rgba(0,0,0,0.8) !important;
+  opacity: 0;
+  visibility: hidden;
+  user-select: none;
+}
+
+.note-slot.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ==========================================================================
+   7. EXPERT FOG & ROTATING RADAR MODES
+   ========================================================================== */
+
+#sudoku-board.expert-fog .cell,
+#sudoku-board.expert-fog .cell.given,
+#sudoku-board.expert-fog .cell.player {
+  background-color: #05020a !important;
+  color: transparent !important;
+  border: 1px solid rgba(181, 23, 158, 0.2) !important;
+}
+
+#sudoku-board.expert-fog .cell.box-alt {
+  background-color: #090314 !important;
+}
+
+#sudoku-board.expert-fog .cell:nth-child(9n+3),
+#sudoku-board.expert-fog .cell:nth-child(9n+6),
+#sudoku-board.expert-fog .cell.box-boundary-right {
+  border-right: 3px solid rgba(224, 86, 203, 0.8) !important;
+}
+
+#sudoku-board.expert-fog .cell:nth-child(n+19):nth-child(-n+27),
+#sudoku-board.expert-fog .cell:nth-child(n+46):nth-child(-n+54),
+#sudoku-board.expert-fog .cell.box-boundary-bottom {
+  border-bottom: 3px solid rgba(224, 86, 203, 0.8) !important;
+}
+
+#sudoku-board.expert-fog .cell.lighthouse-beam {
+  background: linear-gradient(135deg, rgba(181, 23, 158, 0.4) 0%, rgba(181, 23, 158, 0.2) 100%) !important;
+  border-color: rgba(224, 86, 203, 0.6) !important;
+  box-shadow: inset 0 0 12px rgba(181, 23, 158, 0.8) !important;
+}
+#sudoku-board.expert-fog .cell.lighthouse-beam.given { color: #f7ede2 !important; }
+#sudoku-board.expert-fog .cell.lighthouse-beam.player { color: #f15bb5 !important; }
+
+#sudoku-board.expert-fog .cell.selected {
+  background: radial-gradient(circle, #ffffff 0%, #b5179e 60%, rgba(181, 23, 158, 0.5) 100%) !important;
+  color: #05020a !important;
+  border-color: #ffffff !important;
+}
+
+/* --- DYNAMIC RADAR MODE & CONIC OVERLAY --- */
+#sudoku-board.radar-mode {
+  border-color: #a27ee0 !important;
+  box-shadow: 0 0 24px rgba(162, 126, 224, 0.5) !important;
+}
+
+#sudoku-board.radar-mode .cell {
+  background-color: rgba(11, 19, 32, 0.96) !important;
+  color: transparent !important;
+  border: 1px solid rgba(162, 126, 224, 0.2) !important;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+#sudoku-board.radar-mode .cell.box-alt {
+  background-color: rgba(16, 12, 36, 0.96) !important;
+}
+
+#sudoku-board.radar-mode .cell.box-boundary-right {
+  border-right: 3px solid rgba(162, 126, 224, 0.75) !important;
+}
+
+#sudoku-board.radar-mode .cell.box-boundary-bottom {
+  border-bottom: 3px solid rgba(162, 126, 224, 0.75) !important;
+}
+
+/* State 1: Leading Ping Edge */
+#sudoku-board.radar-mode .cell.pre-lit {
+  background-color: rgba(162, 126, 224, 0.15) !important;
+  border-color: rgba(162, 126, 224, 0.5) !important;
+  color: rgba(245, 238, 255, 0.5) !important;
+  text-shadow: 0 0 4px #a27ee0 !important;
+}
+
+/* State 2: Main Beam Illumination */
+#sudoku-board.radar-mode .cell.lit {
+  background-color: rgba(162, 126, 224, 0.32) !important;
+  border-color: #a27ee0 !important;
+  color: #f5eeff !important;
+  box-shadow: inset 0 0 10px rgba(162, 126, 224, 0.6) !important;
+  text-shadow: 0 0 8px #f5eeff, 0 0 14px #a27ee0 !important;
+}
+
+#sudoku-board.radar-mode .cell.selected {
+  background: radial-gradient(circle, #ffffff 0%, #a27ee0 60%, rgba(162, 126, 224, 0.6) 100%) !important;
+  color: #0b1320 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 0 16px #a27ee0 !important;
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+
+/* Radar Rotating Conic Overlay */
+.radar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+  display: none;
+}
+
+#sudoku-board.radar-mode .radar-overlay {
+  display: block;
+}
+
+.radar-beam {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(245, 238, 255, 0.75) 0deg,
+    rgba(162, 126, 224, 0.4) 35deg,
+    rgba(162, 126, 224, 0.05) 75deg,
+    transparent 90deg,
+    transparent 360deg
+  );
+  transform-origin: center center;
+}
+
+.radar-ping-line {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(162, 126, 224, 0.6) 0deg,
+    transparent 2deg,
+    transparent 360deg
+  );
+  transform-origin: center center;
+}
+
+/* ==========================================================================
+   8. 3D TACTILE ARCADE NUMPAD & GLASS PENCIL CONTROLS
+   ========================================================================== */
+
+.action-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 2px 0;
+}
+
+.action-bar-btn {
+  width: 100%;
+  background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
+  border: 2px solid #2de2e6;
+  border-bottom: 4px solid #008b8b;
+  color: #2de2e6;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  transition: all 0.08s ease;
+  user-select: none;
+}
+
+.action-bar-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.action-bar-btn.notes-active {
+  background: linear-gradient(180deg, #2d2a08 0%, #171500 100%) !important;
+  border-color: #ffff33 !important;
+  border-bottom-color: #cccc00 !important;
+  color: #ffff33 !important;
+  box-shadow: 0 0 14px rgba(255, 255, 51, 0.6), inset 0 0 8px rgba(255, 255, 51, 0.2) !important;
+  text-shadow: 0 0 6px #ffff33;
+}
+
+.numpad {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.num-btn {
+  background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
+  border: 2px solid #2de2e6;
+  border-bottom: 5px solid #008b8b; /* 3D Raised Edge Depth */
+  color: #f7ede2;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba(45, 226, 230, 0.2);
+  transition: all 0.05s ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 3D Mechanical Button Depress Effect */
+.num-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 2px;
+  background: #2de2e6 !important;
+  color: #020205 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 15px #2de2e6;
+}
+
+.num-btn.action-btn {
+  border-color: #ff003c;
+  border-bottom: 5px solid #a00026; /* 3D Red Raised Edge Depth */
+  color: #ff003c;
+  font-size: 11px;
+  letter-spacing: -0.5px;
+}
+
+.num-btn.action-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 2px;
+  background: #ff003c !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 15px #ff003c;
+}
+
+.num-btn.completed {
+  opacity: 0.25 !important;
+  border-color: #444 !important;
+  border-bottom-color: #222 !important;
+  color: #666 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.btn-digit {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.badge {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 10px;
+  color: #f15bb5;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   9. MODAL OVERLAYS & 3D TITLE BUTTONS
+   ========================================================================== */
+
+.win-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(2, 2, 5, 0.96);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.win-overlay.active { display: flex; }
+
+.win-text {
+  font-size: 32px;
+  font-weight: bold;
+  color: #2de2e6;
+  text-shadow: 4px 4px 0px #f15bb5;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.game-over-title { color: #ff003c; text-shadow: 4px 4px 0px #0b1026; }
+.title-logo { color: #2de2e6; text-shadow: 4px 4px 0px #f15bb5; line-height: 1.1; }
+
+.mode-select-group,
+.game-over-actions,
+.win-actions,
+.confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+  width: 80%;
+  max-width: 300px;
+}
+
+.confirm-subtitle {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: bold;
+  color: #ff9f1c;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 6px rgba(255, 159, 28, 0.6);
+  line-height: 1.4;
+}
+
+.play-again-btn {
+  background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
+  border: 2px solid #2de2e6;
+  border-bottom: 5px solid #008b8b;
+  color: #2de2e6;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  transition: all 0.05s ease-out;
+}
+
+.play-again-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 2px;
+}
+
+.btn-continue {
+  color: #2de2e6 !important;
+  border-color: #2de2e6 !important;
+  border-bottom-color: #008b8b !important;
+}
+
+.btn-quit-gameover {
+  color: #ff003c !important;
+  border-color: #ff003c !important;
+  border-bottom-color: #a00026 !important;
+}
+
+.btn-quit-gameover:active {
+  background: #ff003c !important;
+  color: #ffffff !important;
+}
+
+.btn-easy { color: #00ff00 !important; border-color: #00ff00 !important; border-bottom-color: #008800 !important; }
+.btn-normal { color: #ff9f1c !important; border-color: #ff9f1c !important; border-bottom-color: #aa6600 !important; }
+.btn-hard { color: #ff003c !important; border-color: #ff003c !important; border-bottom-color: #a00026 !important; }
+.btn-expert { color: #b5179e !important; border-color: #b5179e !important; border-bottom-color: #660055 !important; }
+.btn-radar { color: #2de2e6 !important; border-color: #2de2e6 !important; border-bottom-color: #008b8b !important; }
+
+/* ==========================================================================
+   SUPER SUDOKU ARCADE - COMPACT STACKED HEADER LOGO (HIGH LUMINANCE)
+   ========================================================================== */
+
+.super-sudoku-logo {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 28px;
+  background: var(--dark-bg);
+  border: 3px solid var(--cyber-teal);
+  border-radius: 8px;
+  box-shadow: 
+    0 0 15px rgba(46, 196, 182, 0.5),
+    inset 0 0 20px rgba(11, 19, 32, 0.9);
+  overflow: visible; 
+  user-select: none;
+  animation: logoPulse 3s infinite ease-in-out;
+}
+
+/* Individual Word Lines - Placed above the scanline overlay */
+.super-sudoku-logo .logo-line {
+  font-family: 'Press Start 2P', cursive, monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1; 
+  display: block;
+  position: relative;
+  z-index: 5; /* Ensures text stays sharply above CRT scanlines */
+}
+
+/* Line 1: SUPER (Vibrant Neon Orange with High Glow) */
+.super-sudoku-logo .line-super {
+  font-size: 14px;
+  letter-spacing: 5px;
+  color: #ffb703; /* Brightened neon orange */
+  margin-bottom: 10px;
+  text-shadow: 
+    0 0 6px #ffb703,
+    0 0 12px var(--neon-orange),
+    2px 2px 0px #000000;
+}
+
+/* Line 2: SUDOKU (Ultra-Bright Chrome/Cyber Teal Split) */
+.super-sudoku-logo .line-sudoku {
+  font-size: 24px;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  color: #ffffff; /* High contrast fallback */
+  background: linear-gradient(
+    180deg, 
+    #ffffff 0%, 
+    #70e0d6 35%, 
+    var(--cyber-teal) 50%, 
+    #ffffff 52%, 
+    #b5838d 75%, 
+    #ffffff 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: 
+    drop-shadow(0 0 8px var(--cyber-teal)) 
+    drop-shadow(0 0 16px rgba(46, 196, 182, 0.6));
+}
+
+/* Line 3: ARCADE (Vibrant Neon Pink with High Glow) */
+.super-sudoku-logo .line-arcade {
+  font-size: 16px;
+  letter-spacing: 6px;
+  color: #ff758f; /* Brightened neon pink */
+  text-shadow: 
+    0 0 6px #ff758f,
+    0 0 14px var(--neon-pink),
+    2px 2px 0px #000000;
+}
+
+/* CRT Scanlines Layer — Pushed behind text (z-index: 1) so it doesn't dim letters */
+.super-sudoku-logo::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; 
+  right: 0; bottom: 0;
+  border-radius: 6px;
+  background: linear-gradient(rgba(11, 19, 32, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1; /* Sits under the logo text (z-index: 5) */
+}
+
+/* Ambient Pulse Animation */
+@keyframes logoPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(46, 196, 182, 0.4), inset 0 0 20px rgba(11, 19, 32, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(46, 196, 182, 0.7), inset 0 0 20px rgba(11, 19, 32, 0.9);
+  }
+}

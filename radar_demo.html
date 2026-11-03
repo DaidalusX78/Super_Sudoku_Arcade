@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcade Radar Grid Dynamic Demo</title>
+  <style>
+    :root {
+      --dark-bg: #0b1320;
+      --radar-violet: #a27ee0;
+      --radar-white: #f5eeff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--dark-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', Courier, monospace;
+      user-select: none;
+    }
+
+    /* Board Container */
+    .grid-container {
+      position: relative;
+      width: 360px;
+      height: 360px;
+      background-color: var(--dark-bg);
+      border: 3px solid var(--radar-violet);
+      border-radius: 8px;
+      box-shadow: 
+        0 0 20px rgba(162, 126, 224, 0.4),
+        inset 0 0 15px rgba(11, 19, 32, 0.8);
+      overflow: hidden;
+    }
+
+    /* 9x9 Sudoku Grid */
+    .sudoku-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .cell {
+      border: 1px solid rgba(162, 126, 224, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--radar-white);
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      background-color: rgba(11, 19, 32, 0.95); /* Hidden state (Dark Fog) */
+    }
+
+    /* Hide cell digits by default */
+    .cell-value {
+      opacity: 0;
+      transition: opacity 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    /* State 1: Pre-Highlight (Leading Edge Target Lock) */
+    .cell.pre-lit {
+      background-color: rgba(162, 126, 224, 0.12);
+      border-color: rgba(162, 126, 224, 0.5);
+    }
+
+    .cell.pre-lit .cell-value {
+      opacity: 0.45; /* Soft preview flicker before full sweep */
+      text-shadow: 0 0 4px var(--radar-violet);
+    }
+
+    /* State 2: Main Radar Beam Illumination */
+    .cell.lit {
+      background-color: rgba(162, 126, 224, 0.3);
+      border-color: var(--radar-violet);
+      box-shadow: inset 0 0 10px rgba(162, 126, 224, 0.6);
+    }
+
+    .cell.lit .cell-value {
+      opacity: 1;
+      text-shadow: 0 0 8px var(--radar-white), 0 0 14px var(--radar-violet);
+    }
+
+    /* 3x3 Block Boundary Accents */
+    .cell:nth-child(3n) {
+      border-right: 2px solid rgba(162, 126, 224, 0.6);
+    }
+    .sudoku-grid > .cell:nth-child(n+19):nth-child(-n+27),
+    .sudoku-grid > .cell:nth-child(n+46):nth-child(-n+54) {
+      border-bottom: 2px solid rgba(162, 126, 224, 0.6);
+    }
+
+    /* Radar Overlay Container */
+    .radar-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Conic Rotating Main Radar Beam */
+    .radar-beam {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(245, 238, 255, 0.75) 0deg,   /* Lead edge highlight (#f5eeff) */
+        rgba(162, 126, 224, 0.4) 35deg,   /* Mid-sweep violet glow (#a27ee0) */
+        rgba(162, 126, 224, 0.05) 75deg,  /* Fading sweep trail */
+        transparent 90deg,
+        transparent 360deg
+      );
+      transform-origin: center center;
+    }
+
+    /* Leading Scan Ping Line (Ahead of main beam) */
+    .radar-ping-line {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(162, 126, 224, 0.6) 0deg,
+        transparent 2deg,
+        transparent 360deg
+      );
+      transform-origin: center center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-container" id="radar-board">
+    
+    <!-- 9x9 Sudoku Grid -->
+    <div class="sudoku-grid" id="sudoku-grid"></div>
+
+    <!-- Radar Overlay Layer -->
+    <div class="radar-overlay">
+      <div class="radar-ping-line" id="radar-ping-line"></div>
+      <div class="radar-beam" id="radar-beam"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const gridContainer = document.getElementById('sudoku-grid');
+    const radarBeam = document.getElementById('radar-beam');
+    const radarPingLine = document.getElementById('radar-ping-line');
+    const gridBoard = document.getElementById('radar-board');
+
+    // Sample Sudoku board numbers
+    const boardValues = [
+      5,3,0, 0,7,0, 0,0,0,
+      6,0,0, 1,9,5, 0,0,0,
+      0,9,8, 0,0,0, 0,6,0,
+      8,0,0, 0,6,0, 0,0,3,
+      4,0,0, 8,0,3, 0,0,1,
+      7,0,0, 0,2,0, 0,0,6,
+      0,6,0, 0,0,0, 2,8,0,
+      0,0,0, 4,1,9, 0,0,5,
+      0,0,0, 0,8,0, 0,7,9
+    ];
+
+    const cells = [];
+
+    // 1. Build Grid Cells
+    for (let i = 0; i < 81; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      
+      const span = document.createElement('span');
+      span.classList.add('cell-value');
+      span.textContent = boardValues[i] !== 0 ? boardValues[i] : '';
+      
+      cell.appendChild(span);
+      gridContainer.appendChild(cell);
+      cells.push(cell);
+    }
+
+    // 2. Radar Configuration
+    const SWEEP_DURATION_MS = 7000; // 7.0 seconds (50% slower rotation speed)
+    const SWEEP_ARC_DEG = 60;        // Width of main beam
+    const PRE_LEAD_DEG = 30;         // How far ahead the pre-highlight beam runs
+    let startTime = null;
+
+    // 3. Animation Engine Loop
+    function updateRadarSweep(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+
+      // Current main beam angle (0 to 360 deg)
+      const currentAngle = ((elapsed % SWEEP_DURATION_MS) / SWEEP_DURATION_MS) * 360;
+      
+      // Leading ping angle runs PRE_LEAD_DEG ahead of currentAngle
+      const leadingAngle = (currentAngle + PRE_LEAD_DEG) % 360;
+
+      // Rotate visual CSS elements
+      radarBeam.style.transform = `rotate(${currentAngle}deg)`;
+      radarPingLine.style.transform = `rotate(${leadingAngle}deg)`;
+
+      // Board center point
+      const boardRect = gridBoard.getBoundingClientRect();
+      const centerX = boardRect.left + boardRect.width / 2;
+      const centerY = boardRect.top + boardRect.height / 2;
+
+      // 4. Calculate Angle for Every Cell
+      cells.forEach(cell => {
+        const rect = cell.getBoundingClientRect();
+        const cellX = rect.left + rect.width / 2;
+        const cellY = rect.top + rect.height / 2;
+
+        let dx = cellX - centerX;
+        let dy = cellY - centerY;
+        let cellAngle = (Math.atan2(dy, dx) * (180 / Math.PI)) + 90;
+        if (cellAngle < 0) cellAngle += 360;
+
+        // Angle differences
+        let mainDiff = (currentAngle - cellAngle + 360) % 360;
+        let leadDiff = (leadingAngle - cellAngle + 360) % 360;
+
+        // Reset classes
+        cell.classList.remove('lit', 'pre-lit');
+
+        // Check if inside main beam
+        if (mainDiff <= SWEEP_ARC_DEG) {
+          cell.classList.add('lit');
+        } 
+        // Check if touched by the pre-highlight leading line
+        else if (leadDiff <= 15) {
+          cell.classList.add('pre-lit');
+        }
+      });
+
+      requestAnimationFrame(updateRadarSweep);
+    }
+
+    // Launch Engine
+    requestAnimationFrame(updateRadarSweep);
+  </script>
+
+</body>
+</html>
