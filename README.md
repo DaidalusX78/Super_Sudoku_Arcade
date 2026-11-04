@@ -14,7 +14,7 @@ Open `index.html` (studio intro, then **PLAY**) or `super_sudoku_arcade.html` di
 | Expert | up to 60 | 02:00 | Fog: digits hidden, only the selected row/column lights up |
 | Radar | up to 60 | 03:00 | A rotating beam briefly reveals digits |
 
-Puzzles always have a unique solution, so Expert/Radar may have slightly fewer holes than requested.
+Puzzles always have a unique solution; Expert/Radar request 60 holes but typically get 58-60 because very sparse unique puzzles are rare.
 
 ## Rules & scoring
 - Correct entries score 100 x multiplier (x1 to x4); the multiplier rises per correct move and resets on a mistake or after 10 s idle.
@@ -34,9 +34,18 @@ The **MENU** button opens the arcade drawer (sound, player name, high scores, qu
 
 ## Project structure
 - `index.html`, `logo.css`, `logo.js` - studio intro
-- `super_sudoku_arcade.html`, `style.css`, `sudoku.js` - the game
+- `super_sudoku_arcade.html`, `style.css` - the game page
+- `generator.js` - puzzle generation and unique-solution solver (pure logic)
+- `leaderboard.js` - leaderboard storage and migration (pure logic)
+- `audio.js` - synthesised sound effects and sound setting
+- `sudoku.js` - game engine and UI
+- `fonts/` - bundled VT323 and Press Start 2P (SIL Open Font License)
+- `tests/` - unit tests
 - `radar_demo.html` - standalone radar prototype
 - `VERSION`, `CHANGELOG.md` - versioning (semantic; the UI version comes from `GAME_VERSION` in `sudoku.js`)
+
+## Tests
+`npm test` runs the unit tests (Node 18+, no dependencies).
 
 Player name, sound setting and leaderboards are stored in the browser's `localStorage`.
 

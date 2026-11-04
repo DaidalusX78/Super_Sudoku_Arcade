@@ -1,0 +1,9 @@
+{
+  "name": "super-sudoku-arcade",
+  "version": "1.3.0",
+  "private": true,
+  "description": "Retro arcade Sudoku (plain HTML/CSS/JS, no build step)",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}

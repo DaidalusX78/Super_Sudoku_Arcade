@@ -3,7 +3,8 @@
    ========================================================================== */
 
 /* 1. ROOT COLOR VARIABLES & PIXEL FONT IMPORT */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* Bundled font (SIL Open Font License) */
+@font-face { font-family: 'Press Start 2P'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/PressStart2P.woff2') format('woff2'); }
 
 :root {
   --neon-orange: #ff9f1c;

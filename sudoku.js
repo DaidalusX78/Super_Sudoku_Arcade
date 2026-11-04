@@ -1,107 +1,14 @@
 // ==========================================================================
-// SUPER SUDOKU ARCADE - MASTER GAME ENGINE
+// SUPER SUDOKU ARCADE - GAME ENGINE & UI (needs audio.js, leaderboard.js, generator.js)
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.2.0';
+const GAME_VERSION = 'v1.3.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
   el.textContent = el.dataset.prefix ? `${el.dataset.prefix}${GAME_VERSION}` : GAME_VERSION;
 });
-
-// --- 1. Audio Synth Engine ---
-let isMuted = localStorage.getItem('superSudokuMuted') === 'true';
-
-function initMuteButton() {
-  const menuSoundText = document.getElementById('menu-sound-text');
-  const menuSoundIcon = document.getElementById('menu-sound-icon');
-  const menuMuteBtn = document.getElementById('menu-mute-btn');
-
-  if (menuSoundText && menuSoundIcon) {
-    if (isMuted) {
-      menuSoundIcon.innerText = '🔇';
-      menuSoundText.innerText = 'SOUND: OFF';
-      if (menuMuteBtn) menuMuteBtn.classList.add('muted');
-    } else {
-      menuSoundIcon.innerText = '🔊';
-      menuSoundText.innerText = 'SOUND: ON';
-      if (menuMuteBtn) menuMuteBtn.classList.remove('muted');
-    }
-  }
-}
-
-function toggleMute() {
-  isMuted = !isMuted;
-  localStorage.setItem('superSudokuMuted', isMuted);
-  initMuteButton();
-  if (!isMuted) {
-    initAudio();
-    playSound('move');
-  }
-}
-
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-let audioCtx;
-
-function initAudio() {
-  if (!audioCtx) audioCtx = new AudioContext();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-}
-
-function playSound(type) {
-  if (!audioCtx || isMuted) return;
-  
-  const oscillator = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
-  oscillator.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-  const now = audioCtx.currentTime;
-  
-  if (type === 'move') {
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(440, now);
-    oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.05);
-    gainNode.gain.setValueAtTime(0.05, now);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-    oscillator.start(now);
-    oscillator.stop(now + 0.05);
-  } else if (type === 'correct') {
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(987.77, now);
-    oscillator.frequency.setValueAtTime(1318.51, now + 0.08);
-    gainNode.gain.setValueAtTime(0.1, now);
-    gainNode.gain.linearRampToValueAtTime(0, now + 0.3);
-    oscillator.start(now);
-    oscillator.stop(now + 0.3);
-  } else if (type === 'error') {
-    oscillator.type = 'sawtooth';
-    oscillator.frequency.setValueAtTime(150, now);
-    oscillator.frequency.exponentialRampToValueAtTime(40, now + 0.2);
-    gainNode.gain.setValueAtTime(0.2, now);
-    gainNode.gain.linearRampToValueAtTime(0, now + 0.2);
-    oscillator.start(now);
-    oscillator.stop(now + 0.2);
-  } else if (type === 'win') {
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(523.25, now);
-    oscillator.frequency.setValueAtTime(659.25, now + 0.1);
-    oscillator.frequency.setValueAtTime(783.99, now + 0.2);
-    oscillator.frequency.setValueAtTime(1046.50, now + 0.3);
-    gainNode.gain.setValueAtTime(0.2, now);
-    gainNode.gain.linearRampToValueAtTime(0, now + 0.6);
-    oscillator.start(now);
-    oscillator.stop(now + 0.6);
-  } else if (type === 'gameover') {
-    oscillator.type = 'sawtooth';
-    oscillator.frequency.setValueAtTime(300, now);
-    oscillator.frequency.exponentialRampToValueAtTime(50, now + 1.5);
-    gainNode.gain.setValueAtTime(0.3, now);
-    gainNode.gain.linearRampToValueAtTime(0, now + 1.5);
-    oscillator.start(now);
-    oscillator.stop(now + 1.5);
-  }
-}
 
 // --- 2. Player Name Management ---
 let playerName = localStorage.getItem('superSudokuPlayerName') || 'PLAYER 1';
@@ -152,103 +59,6 @@ function savePlayerName() {
   localStorage.setItem('superSudokuPlayerName', playerName);
   updatePlayerNameDisplay();
   closeNameModal();
-}
-
-// --- 3. High Scores Leaderboard Engine ---
-const LEADERBOARD_MODES = ['easy', 'normal', 'hard', 'expert', 'radar'];
-const LEADERBOARD_SIZE = 5;
-
-// Placeholder entries shipped in v1.1.0/v1.1.1. They are purged on first load
-// of v1.2.0 so leaderboards only ever contain real scores.
-const LEGACY_SEEDED_SCORES = {
-  easy: [['MCB', 14500], ['ARC', 11200], ['NEO', 9800], ['JED', 8500], ['ACE', 7200]],
-  normal: [['MCB', 18200], ['VEX', 14000], ['RET', 12500], ['CYB', 10400], ['ZED', 9100]],
-  hard: [['MCB', 22800], ['KOR', 17500], ['BLZ', 15300], ['MAX', 13000], ['SYN', 11200]],
-  expert: [['MCB', 28500], ['GHO', 21000], ['DRK', 18400], ['VOID', 16000], ['NULL', 13500]],
-  radar: [['MCB', 25000], ['SWP', 19800], ['BEAM', 16500], ['ECHO', 14200], ['PULSE', 12000]]
-};
-
-function emptyLeaderboards() {
-  const boards = {};
-  LEADERBOARD_MODES.forEach(mode => { boards[mode] = []; });
-  return boards;
-}
-
-function getLeaderboards() {
-  try {
-    const data = localStorage.getItem('superSudokuLeaderboards');
-    if (data) {
-      const parsed = JSON.parse(data);
-      LEADERBOARD_MODES.forEach(mode => {
-        if (!parsed[mode] || !Array.isArray(parsed[mode])) parsed[mode] = [];
-      });
-      return parsed;
-    }
-  } catch (e) {
-    console.error('Failed to parse leaderboard data:', e);
-  }
-  return emptyLeaderboards();
-}
-
-// One-time migration: purge placeholder scores and carry over the old
-// single (mode-less) high score. It is placed on NORMAL since the old
-// version never recorded which mode it came from.
-function migrateLegacyData() {
-  if (localStorage.getItem('superSudokuMigratedV120')) return;
-
-  const boards = getLeaderboards();
-  LEADERBOARD_MODES.forEach(mode => {
-    const seeded = LEGACY_SEEDED_SCORES[mode];
-    boards[mode] = boards[mode].filter(entry =>
-      !seeded.some(([name, score]) => entry.name === name && entry.score === score));
-  });
-
-  const legacyHigh = parseInt(localStorage.getItem('superSudokuHighScore'), 10);
-  if (legacyHigh > 0) {
-    boards.normal.push({ name: (playerName || 'PLAYER 1').toUpperCase(), score: legacyHigh, date: '2026' });
-    boards.normal.sort((a, b) => b.score - a.score);
-    boards.normal = boards.normal.slice(0, LEADERBOARD_SIZE);
-  }
-
-  saveLeaderboards(boards);
-  localStorage.removeItem('superSudokuHighScore');
-  localStorage.setItem('superSudokuMigratedV120', 'true');
-}
-function saveLeaderboards(boards) {
-  try {
-    localStorage.setItem('superSudokuLeaderboards', JSON.stringify(boards));
-  } catch (e) {
-    console.error('Failed to save leaderboard data:', e);
-  }
-}
-
-function getModeHighScore(mode) {
-  const boards = getLeaderboards();
-  const list = boards[mode] || [];
-  return list.length > 0 ? list[0].score : 0;
-}
-
-function recordScore(mode, score) {
-  if (score <= 0) return { rank: -1, isNewHighScore: false };
-  const boards = getLeaderboards();
-  const list = boards[mode] || [];
-  
-  const currentPilot = (playerName && playerName.trim()) ? playerName.trim().toUpperCase() : 'PILOT';
-  const entry = {
-    name: currentPilot,
-    score: score,
-    date: '2026'
-  };
-
-  list.push(entry);
-  list.sort((a, b) => b.score - a.score);
-  const trimmed = list.slice(0, LEADERBOARD_SIZE);
-  boards[mode] = trimmed;
-  saveLeaderboards(boards);
-
-  const rank = trimmed.findIndex(e => e === entry) + 1;
-  const isNewHighScore = rank === 1;
-  return { rank, isNewHighScore };
 }
 
 let activeLeaderboardTab = 'easy';
@@ -405,7 +215,9 @@ let selectedCellIndex = null;
 let gridCells = []; 
 let isGameOver = true; 
 let currentDifficulty = 40; 
-let currentMode = 'normal';
+const VALID_MODES = ['easy', 'normal', 'hard', 'expert', 'radar'];
+const savedMode = localStorage.getItem('superSudokuLastMode');
+let currentMode = VALID_MODES.includes(savedMode) ? savedMode : 'normal';
 let currentSolution = [];
 let cellCenters = [];
 
@@ -460,113 +272,6 @@ function getCellValue(cell) {
   return cell.dataset.value || '';
 }
 
-// --- 6. Sudoku Generation Engine ---
-function isSafe(grid, index, value) {
-  const row = Math.floor(index / 9), col = index % 9;
-  const blockRow = Math.floor(row / 3), blockCol = Math.floor(col / 3);
-  for (let i = 0; i < 81; i++) {
-    if (i === index) continue;
-    const r = Math.floor(i / 9), c = i % 9;
-    const bRow = Math.floor(r / 3), bCol = Math.floor(c / 3);
-    if (r === row || c === col || (bRow === blockRow && bCol === blockCol)) {
-      if (grid[i] === value) return false;
-    }
-  }
-  return true;
-}
-
-function fillGrid(grid) {
-  for (let i = 0; i < 81; i++) {
-    if (grid[i] === 0) {
-      let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
-      for (let n of nums) {
-        if (isSafe(grid, i, n)) {
-          grid[i] = n;
-          if (fillGrid(grid)) return true;
-          grid[i] = 0; 
-        }
-      }
-      return false; 
-    }
-  }
-  return true; 
-}
-
-function generatePuzzle(difficultyHoles) {
-  let grid = new Array(81).fill(0);
-  fillGrid(grid);
-  currentSolution = [...grid];
-  
-  // Remove cells in random order, keeping a removal only if the puzzle still
-  // has exactly one solution (so every correct move matches currentSolution).
-  let puzzle = [...grid];
-  const order = Array.from({ length: 81 }, (_, i) => i).sort(() => Math.random() - 0.5);
-  let holes = 0;
-  for (const idx of order) {
-    if (holes >= difficultyHoles) break;
-    const backup = puzzle[idx];
-    puzzle[idx] = 0;
-    if (countSolutions(puzzle, 2) === 1) {
-      holes++;
-    } else {
-      puzzle[idx] = backup;
-    }
-  }
-  return puzzle;
-}
-
-// Bitmask backtracking solver with minimum-remaining-values heuristic.
-// Counts solutions up to `limit` (stops early).
-function countSolutions(puzzle, limit) {
-  const grid = [...puzzle];
-  const rows = new Array(9).fill(0);
-  const cols = new Array(9).fill(0);
-  const boxes = new Array(9).fill(0);
-
-  for (let i = 0; i < 81; i++) {
-    const v = grid[i];
-    if (v) {
-      const bit = 1 << v;
-      const r = Math.floor(i / 9), c = i % 9;
-      rows[r] |= bit; cols[c] |= bit; boxes[Math.floor(r / 3) * 3 + Math.floor(c / 3)] |= bit;
-    }
-  }
-
-  let count = 0;
-
-  function solve() {
-    let best = -1, bestMask = 0, bestCount = 10;
-    for (let i = 0; i < 81; i++) {
-      if (grid[i] !== 0) continue;
-      const r = Math.floor(i / 9), c = i % 9;
-      const used = rows[r] | cols[c] | boxes[Math.floor(r / 3) * 3 + Math.floor(c / 3)];
-      const avail = ~used & 0x3FE;
-      let n = 0;
-      for (let m = avail; m; m &= m - 1) n++;
-      if (n < bestCount) {
-        best = i; bestMask = avail; bestCount = n;
-        if (n === 0) return;
-        if (n === 1) break;
-      }
-    }
-    if (best === -1) { count++; return; }
-
-    const r = Math.floor(best / 9), c = best % 9, b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
-    for (let v = 1; v <= 9 && count < limit; v++) {
-      const bit = 1 << v;
-      if (!(bestMask & bit)) continue;
-      grid[best] = v;
-      rows[r] |= bit; cols[c] |= bit; boxes[b] |= bit;
-      solve();
-      grid[best] = 0;
-      rows[r] &= ~bit; cols[c] &= ~bit; boxes[b] &= ~bit;
-    }
-  }
-
-  solve();
-  return count;
-}
-
 function cacheCellCenters() {
   if (!gridCells.length) return;
   cellCenters = gridCells.map(cell => {
@@ -586,6 +291,7 @@ function startGame(holes, timeInSeconds, mode = 'normal') {
   currentDifficulty = holes; 
   currentDifficultyTime = timeInSeconds; 
   currentMode = mode;
+  localStorage.setItem('superSudokuLastMode', mode);
   
   updateHiScoreHUD();
 
@@ -613,7 +319,9 @@ function initializeBoard() {
     boardContainer.classList.remove('radar-mode');
   }
 
-  const puzzleData = generatePuzzle(currentDifficulty); 
+  const generated = generatePuzzle(currentDifficulty);
+  const puzzleData = generated.puzzle;
+  currentSolution = generated.solution;
 
   for (let i = 0; i < 81; i++) {
     const cell = document.createElement('div');
@@ -755,7 +463,7 @@ function stopRadarEngine() {
 }
 
 // --- 9. Cell Selection & Highlights ---
-function selectCell(index) {
+function selectCell(index, silent = false) {
   if (isGameOver) return;
   initAudio(); 
   playSound('move'); 
@@ -804,6 +512,11 @@ function selectCell(index) {
   }
 
   gridCells[index].classList.add('selected');
+
+  // Radar/Expert hide digits visually; keep announcements to position + given/empty state only there
+  const hideValue = currentMode === 'radar' || currentMode === 'expert';
+  const val = getCellValue(gridCells[index]);
+  if (!silent) announce(`Row ${targetRow + 1}, column ${targetCol + 1}, ` + (val && !hideValue ? `value ${val}` : (val ? 'filled' : 'empty')));
 }
 
 // --- 10. Gameplay Input & Validation ---
@@ -836,7 +549,7 @@ function handleInput(value) {
         renderCellNotes(selectedCellIndex);
       }
     }
-    if (!isGameOver) selectCell(selectedCellIndex);
+    if (!isGameOver) selectCell(selectedCellIndex, true);
     return;
   }
 
@@ -889,10 +602,12 @@ function handleInput(value) {
       }
     }
 
+    announce('Correct. Score ' + (playerScore + BASE_POINTS * currentMultiplier));
     handleCorrectMove(cell); 
     checkWinCondition(); 
   } else {
     playSound('error'); 
+    announce('Wrong number. Strike ' + (strikes + 1) + ' of ' + MAX_STRIKES);
     cell.classList.add('error');
     breakCombo(); 
     
@@ -914,7 +629,7 @@ function handleInput(value) {
   }
 
   updateDigitCounters();
-  if (!isGameOver) selectCell(selectedCellIndex);
+  if (!isGameOver) selectCell(selectedCellIndex, true);
 }
 
 // --- 11. HUD & Counter Updates ---
@@ -1062,7 +777,7 @@ let runRecorded = true; // true until a run starts
 function finalizeRun() {
   if (runRecorded) return { rank: -1, isNewHighScore: false };
   runRecorded = true;
-  const result = recordScore(currentMode, playerScore);
+  const result = recordScore(currentMode, playerScore, playerName);
   updateHiScoreHUD();
   return result;
 }
@@ -1157,7 +872,7 @@ function continueGame() {
     startRadarEngine();
   }
   if (selectedCellIndex !== null) {
-    selectCell(selectedCellIndex);
+    selectCell(selectedCellIndex, true);
   }
 }
 
@@ -1179,6 +894,7 @@ function triggerWin() {
   }
 
   updateHiScoreHUD();
+  announce('Stage clear. Score ' + playerScore);
   document.getElementById('win-screen').classList.add('active');
 }
 
@@ -1198,6 +914,7 @@ function triggerGameOver() {
     gameoverSummary.innerHTML = `FINAL SCORE: ${playerScore.toString().padStart(6, '0')}`;
   }
 
+  announce('Game over. Final score ' + playerScore);
   document.getElementById('game-over-screen').classList.add('active');
   startContinueCountdown();
 }
@@ -1421,8 +1138,81 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Backspace' || e.key === 'Delete') handleInput('clear');
 });
 
+// --- 16. Accessibility helpers ---
+function announce(message) {
+  const region = document.getElementById('sr-status');
+  if (!region) return;
+  region.textContent = '';
+  // Re-set on next tick so repeated identical messages are still announced
+  setTimeout(() => { region.textContent = message; }, 30);
+}
+
+const OVERLAY_IDS = ['name-modal', 'leaderboard-modal', 'quit-confirm-screen', 'game-over-screen', 'win-screen', 'arcade-menu', 'title-screen'];
+const FOCUSABLE = 'button:not([disabled]), input:not([disabled]), [role="button"][tabindex="0"]';
+
+function getTopOverlay() {
+  // Stacking order: modals above menu above game-end screens above title
+  const order = ['name-modal', 'leaderboard-modal', 'quit-confirm-screen', 'arcade-menu', 'game-over-screen', 'win-screen', 'title-screen'];
+  for (const id of order) {
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('active')) return el;
+  }
+  return null;
+}
+
+function focusFirstIn(el) {
+  const target = el.querySelector('input, .btn-continue, button, [role="button"]');
+  if (target) target.focus({ preventScroll: true });
+}
+
+// Move focus into an overlay when it opens and keep Tab inside the top overlay
+function initFocusManagement() {
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(m => {
+      const el = m.target;
+      const wasActive = (m.oldValue || '').split(/\s+/).includes('active');
+      const isActive = el.classList.contains('active');
+      if (el.id === 'arcade-menu') el.setAttribute('aria-hidden', String(!isActive));
+      if (isActive && !wasActive) setTimeout(() => focusFirstIn(el), 50);
+    });
+  });
+  OVERLAY_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return;
+    const overlay = getTopOverlay();
+    if (!overlay) return;
+    const items = [...overlay.querySelectorAll(FOCUSABLE)].filter(n => n.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1];
+    if (!overlay.contains(document.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    } else if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  // Keyboard activation for non-<button> controls marked role="button"
+  document.addEventListener('keydown', e => {
+    const t = e.target;
+    if (t && t.getAttribute && t.getAttribute('role') === 'button' && t.tagName !== 'BUTTON' && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      t.click();
+    }
+  });
+}
 // Boot Initializers
-migrateLegacyData();
+migrateLegacyData(playerName);
+initFocusManagement();
+setTimeout(() => { const t = document.getElementById('title-screen'); if (t && t.classList.contains('active')) focusFirstIn(t); }, 100);
 initMuteButton();
 updatePlayerNameDisplay();
 updateHiScoreHUD();

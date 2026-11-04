@@ -2,6 +2,21 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.3.0] - 2026-11-04
+### Added
+- Unit tests (`npm test`, Node's built-in runner, no dependencies) for the puzzle generator/solver and leaderboard storage/migration.
+- Accessibility: ARIA roles and labels, dialog semantics, screen-reader announcements (cell position, correct/wrong, win/game over), focus moved into and trapped inside open overlays, keyboard activation for clickable labels, visible focus ring, `prefers-reduced-motion` support.
+- Fonts are bundled locally (`fonts/`, SIL OFL); the game now makes no network requests.
+- Leaderboard opens on the last-played difficulty (remembered between sessions).
+
+### Changed
+- `sudoku.js` split into `generator.js`, `leaderboard.js`, `audio.js` and `sudoku.js` (classic scripts, still no build step).
+- Puzzle generation retries with fresh grids to reach the requested hole count more often (Expert/Radar now reliably 58+ of 60).
+- Off-screen menu drawer is no longer reachable by keyboard.
+
+### Fixed
+- Solver now rejects puzzles with conflicting givens instead of searching them.
+- Leaderboard rank labels (1ST/2ND/3RD) no longer collide with player names.
 ## [1.2.0] - 2026-11-04
 ### Changed
 - Leaderboards start empty (placeholder scores removed); empty slots show as `---`.

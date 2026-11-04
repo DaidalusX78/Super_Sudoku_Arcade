@@ -9,31 +9,34 @@
 <body>
 
 <div class="game-container">
+  <!-- Screen-reader announcements -->
+  <div id="sr-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
   
   <!-- Top HUD -->
   <div class="hud-wrapper">
       
     <!-- Clock, High Score & Arcade Menu Row -->
     <div class="hud top-hud-row">
-      <div class="clock-group">
+      <div class="clock-group" role="timer" aria-label="Time remaining">
         <!-- Enlarged Digital Clock Display -->
         <div class="digital-clock" id="time-display">00:00</div>
       </div>
         
-      <span class="label hi-score-label" onclick="openLeaderboardModal()" title="View High Score Leaderboards">
+      <span class="label hi-score-label" onclick="openLeaderboardModal()" title="View High Score Leaderboards" role="button" tabindex="0" aria-label="View high scores">
         HI-SCORE: <span id="hi-score-display" class="hi-score-val">000000</span>
       </span>
 
       <!-- Arcade Controls -->
       <div class="hud-btn-group">
-        <button id="menu-btn" class="hud-icon-btn hud-menu-btn" onclick="toggleArcadeMenu()" title="Arcade Menu">☰ MENU</button>
+        <button id="menu-btn" class="hud-icon-btn hud-menu-btn" onclick="toggleArcadeMenu()" title="Arcade Menu" aria-label="Open arcade menu" aria-haspopup="dialog" aria-controls="arcade-menu">☰ MENU</button>
       </div>
     </div>
 
     <!-- Player Stats -->
     <div class="hud stats-hud-row">
       <div class="hud-element player-element">
-        <span class="label player-name-label" id="player-name-display" onclick="openNameModal()" title="Click to Change Name">
+        <span class="label player-name-label" id="player-name-display" onclick="openNameModal()" title="Click to Change Name" role="button" tabindex="0" aria-label="Change player name">
           PLAYER 1 ✎
         </span>
         <span class="value" id="score-display">000000</span>
@@ -58,7 +61,7 @@
   </div> <!-- Closes hud-wrapper -->
 
   <!-- 9x9 Board -->
-  <div class="board" id="sudoku-board"></div>
+  <div class="board" id="sudoku-board" role="group" aria-label="Sudoku board"></div>
 
   <!-- Action Bar: Glass Pencil Notes Toggle -->
   <div class="action-bar">
@@ -79,11 +82,11 @@
     <button class="num-btn" data-num="7"><span class="btn-digit">7</span><span class="badge" id="badge-7">9</span></button>
     <button class="num-btn" data-num="8"><span class="btn-digit">8</span><span class="badge" id="badge-8">9</span></button>
     <button class="num-btn" data-num="9"><span class="btn-digit">9</span><span class="badge" id="badge-9">9</span></button>
-    <button class="num-btn action-btn">ERASE [X]</button>
+    <button class="num-btn action-btn" aria-label="Erase cell">ERASE [X]</button>
   </div>
 
   <!-- Win Screen Overlay -->
-  <div class="win-overlay" id="win-screen">
+  <div class="win-overlay" id="win-screen" role="dialog" aria-modal="true" aria-label="Stage clear">
     <div class="win-text">STAGE CLEAR</div>
     <div class="overlay-score-summary" id="win-score-summary"></div>
     <div class="win-actions">
@@ -94,7 +97,7 @@
   </div>
   
   <!-- Game Over Screen Overlay -->
-  <div class="win-overlay" id="game-over-screen">
+  <div class="win-overlay" id="game-over-screen" role="dialog" aria-modal="true" aria-label="Game over">
     <div class="win-text game-over-title">GAME OVER</div>
     <div class="overlay-score-summary" id="gameover-score-summary"></div>
     <div class="game-over-actions">
@@ -109,7 +112,7 @@
   </div>
 
   <!-- Quit Confirmation Modal Overlay -->
-  <div class="win-overlay" id="quit-confirm-screen">
+  <div class="win-overlay" id="quit-confirm-screen" role="alertdialog" aria-modal="true" aria-label="Quit game confirmation">
     <div class="win-text game-over-title">QUIT GAME?</div>
     <p class="confirm-subtitle">CURRENT GAME PROGRESS WILL BE LOST.</p>
     <div class="confirm-actions">
@@ -119,7 +122,7 @@
   </div>
 
   <!-- Title Screen Overlay -->
-  <div class="win-overlay active" id="title-screen">
+  <div class="win-overlay active" id="title-screen" role="dialog" aria-modal="true" aria-label="Super Sudoku Arcade title screen">
     <!-- RETRO STACKED GAME LOGO HEADER -->
     <div class="super-sudoku-logo">
       <span class="logo-line line-super">SUPER</span>
@@ -128,7 +131,7 @@
     </div>
 
     <!-- Active Player Indicator with Change Button -->
-    <div class="title-player-card" onclick="openNameModal()" title="Click to Change Player Name">
+    <div class="title-player-card" onclick="openNameModal()" title="Click to Change Player Name" role="button" tabindex="0" aria-label="Change player name">
       <span class="player-tag">PILOT:</span>
       <span class="player-current-name" id="title-player-name">PLAYER 1</span>
       <span class="player-edit-icon">✎</span>
@@ -148,19 +151,19 @@
 
     <div class="title-footer-credit">
       <span class="credit-author">MARC BAILEY 2026</span>
-      <span class="credit-version app-version">v1.1.1</span>
+      <span class="credit-version app-version">v1.3.0</span>
     </div>
   </div>
 
   <!-- Arcade Style Pop-Out Menu Drawer & Backdrop -->
   <div class="menu-backdrop" id="menu-backdrop" onclick="closeArcadeMenu()"></div>
-  <aside class="arcade-menu-drawer" id="arcade-menu">
+  <aside class="arcade-menu-drawer" id="arcade-menu" role="dialog" aria-modal="true" aria-label="Arcade settings menu" aria-hidden="true">
     <div class="menu-drawer-header">
       <div class="menu-title-group">
         <span class="menu-neon-tag">ARCADE SYSTEM</span>
         <h2 class="menu-title">SETTINGS</h2>
       </div>
-      <button class="menu-close-btn" onclick="closeArcadeMenu()" title="Close Menu">✕</button>
+      <button class="menu-close-btn" onclick="closeArcadeMenu()" title="Close Menu" aria-label="Close menu">✕</button>
     </div>
 
     <div class="menu-drawer-body">
@@ -208,18 +211,18 @@
 
     <div class="menu-drawer-footer">
       <div class="footer-credit-line">Marc Bailey 2026</div>
-      <div class="footer-version-tag app-version" data-prefix="SUPER SUDOKU ARCADE ">SUPER SUDOKU ARCADE v1.1.1</div>
+      <div class="footer-version-tag app-version" data-prefix="SUPER SUDOKU ARCADE ">SUPER SUDOKU ARCADE v1.3.0</div>
     </div>
   </aside>
 
   <!-- Player Name Input Modal Overlay -->
-  <div class="win-overlay" id="name-modal">
+  <div class="win-overlay" id="name-modal" role="dialog" aria-modal="true" aria-label="Enter your name">
     <div class="arcade-modal-card">
       <div class="win-text modal-neon-title">ENTER YOUR NAME</div>
       <p class="confirm-subtitle">CUSTOMIZE YOUR ARCADE PILOT CALLSIGN</p>
       
       <div class="name-input-wrapper">
-        <input type="text" id="player-name-input" maxlength="12" placeholder="ENTER NAME" autocomplete="off" spellcheck="false">
+        <input type="text" id="player-name-input" aria-label="Player name" maxlength="12" placeholder="ENTER NAME" autocomplete="off" spellcheck="false">
       </div>
 
       <div class="name-modal-actions">
@@ -230,7 +233,7 @@
   </div>
 
   <!-- High Scores Leaderboard Modal Overlay -->
-  <div class="win-overlay" id="leaderboard-modal">
+  <div class="win-overlay" id="leaderboard-modal" role="dialog" aria-modal="true" aria-label="High scores">
     <div class="arcade-modal-card leaderboard-card">
       <div class="leaderboard-header">
         <div class="win-text leaderboard-title">HIGH SCORES</div>
@@ -238,7 +241,7 @@
       </div>
 
       <!-- Difficulty Selector Tabs -->
-      <div class="leaderboard-tabs" id="leaderboard-tabs">
+      <div class="leaderboard-tabs" id="leaderboard-tabs" role="group" aria-label="Difficulty">
         <button class="tab-btn active" data-diff="easy" onclick="switchLeaderboardTab('easy')">EASY</button>
         <button class="tab-btn" data-diff="normal" onclick="switchLeaderboardTab('normal')">NORMAL</button>
         <button class="tab-btn" data-diff="hard" onclick="switchLeaderboardTab('hard')">HARD</button>
@@ -247,7 +250,7 @@
       </div>
 
       <!-- Scores Table Container -->
-      <div class="leaderboard-list" id="leaderboard-list">
+      <div class="leaderboard-list" id="leaderboard-list" aria-live="polite">
         <!-- Rendered dynamically via JS -->
       </div>
 
@@ -259,6 +262,9 @@
 
 </div> <!-- Close game-container -->
 
+<script src="generator.js"></script>
+<script src="leaderboard.js"></script>
+<script src="audio.js"></script>
 <script src="sudoku.js"></script>
 </body>
 </html>
