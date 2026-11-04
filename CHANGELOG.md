@@ -2,6 +2,12 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.10.0] - 2026-11-04
+### Added
+- **Fullscreen Notch & Center Camera Clearance**: Added safe-area padding (`padding-top: max(32px, calc(env(safe-area-inset-top) + 16px))`) and dynamic `.fullscreen-active` state to prevent center punch-hole cameras, notches, pills, or dynamic islands from overlapping HUD and title elements.
+- **Logo in High Score Table**: Added the iconic Super Sudoku Arcade stacked retro logo directly inside the `#leaderboard-modal` card with compact scaling (`.leaderboard-modal-logo`).
+- **Share High Scores**: Added one-click high score sharing (`📤 SHARE SCORES`) supporting both the native Web Share API (`navigator.share`) on mobile devices and an automatic fallback to clipboard copy (`✔ COPIED!`).
+
 ## [1.9.0] - 2026-11-04
 ### Changed
 - **Comprehensive Synthwave / Cyberpunk Theme Harmonization**:

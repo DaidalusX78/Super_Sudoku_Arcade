@@ -3,7 +3,7 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.9.0';
+const GAME_VERSION = 'v1.10.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
@@ -130,6 +130,56 @@ function closeLeaderboardModal() {
   }
 }
 
+async function shareLeaderboard() {
+  initAudio();
+  playSound('move');
+  const mode = activeLeaderboardTab || 'easy';
+  const modeUpper = mode.toUpperCase();
+  const boards = getLeaderboards();
+  const entries = (boards[mode] || []).filter(e => e && e.score > 0);
+
+  let shareText = `🕹️ SUPER SUDOKU ARCADE 🕹️\n🏆 ${modeUpper} HIGH SCORES 🏆\n\n`;
+  if (entries.length === 0) {
+    shareText += `No records set yet for ${modeUpper} mode!\nBe the first champion!\n`;
+  } else {
+    entries.forEach((e, idx) => {
+      const rank = idx === 0 ? '1ST' : idx === 1 ? '2ND' : idx === 2 ? '3RD' : `#${idx + 1}`;
+      shareText += `${rank}. ${e.name} - ${e.score.toString().padStart(6, '0')}\n`;
+    });
+  }
+  shareText += `\nCan you beat the arcade record? 🚀`;
+
+  const btn = document.getElementById('share-leaderboard-btn');
+  const defaultContent = btn ? btn.innerHTML : '<span>📤 SHARE SCORES</span>';
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `Super Sudoku Arcade - ${modeUpper} High Scores`,
+        text: shareText
+      });
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+    }
+  }
+
+  // Fallback to clipboard
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(shareText);
+      if (btn) {
+        btn.innerHTML = '<span>✔ COPIED!</span>';
+        setTimeout(() => {
+          btn.innerHTML = defaultContent;
+        }, 2200);
+      }
+    }
+  } catch (clipboardErr) {
+    console.warn('Clipboard share error:', clipboardErr);
+  }
+}
+
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -192,6 +242,7 @@ function updateFullscreenButton() {
   const text = document.getElementById('menu-fullscreen-text');
   const icon = document.getElementById('menu-fullscreen-icon');
   const isFS = Boolean(document.fullscreenElement);
+  document.body.classList.toggle('fullscreen-active', isFS);
   if (text) text.innerText = isFS ? 'FULL SCREEN: ON' : 'FULL SCREEN: OFF';
   if (icon) icon.innerText = isFS ? '🗗' : '⛶';
 }

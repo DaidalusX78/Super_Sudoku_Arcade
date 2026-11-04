@@ -1,6 +1,6 @@
 /* ==========================================================================
    SUPER SUDOKU ARCADE - RETRO CABINET & CRT MASTER STYLESHEET
-   Version: 1.9.0 | Created by Marc Bailey 2026
+   Version: 1.10.0 | Created by Marc Bailey 2026
    ========================================================================== */
 
 /* --- 0. Font Imports --- */
@@ -75,7 +75,7 @@ body::after {
   height: 100vh;
   height: 100dvh;
   max-height: 850px;
-  padding: 2px 8px 4px 8px; /* Minimal padding at top for HUD docking */
+  padding: max(4px, env(safe-area-inset-top, 0px)) 8px 4px 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* Pinned to top of screen */
@@ -83,6 +83,23 @@ body::after {
   position: relative;
   background-color: #020205;
   gap: 4px;
+}
+
+/* Fullscreen Mode Top Padding: Clear center camera punch-hole, notch, pill, or dynamic island */
+:fullscreen .game-container,
+:-webkit-full-screen .game-container,
+body.fullscreen-active .game-container {
+  padding-top: max(32px, calc(env(safe-area-inset-top, 0px) + 16px)) !important;
+}
+
+:fullscreen .top-hud-row,
+body.fullscreen-active .top-hud-row {
+  margin-top: 6px;
+}
+
+:fullscreen #title-screen,
+body.fullscreen-active #title-screen {
+  padding-top: max(32px, calc(env(safe-area-inset-top, 0px) + 16px)) !important;
 }
 
 /* --- 4. HUD Header & Stat Displays --- */
@@ -1461,6 +1478,25 @@ body.paused #sudoku-board {
 
 .leaderboard-actions {
   width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-share-leaderboard {
+  flex: 1;
+  background: linear-gradient(180deg, #24143d 0%, #120924 100%) !important;
+  border: 2px solid #ffb703 !important;
+  border-bottom: 5px solid #aa7700 !important;
+  color: #ffb703 !important;
+}
+
+.btn-share-leaderboard:hover {
+  border-color: #ffd166 !important;
+  box-shadow: 0 0 12px rgba(255, 183, 3, 0.5) !important;
+}
+
+.leaderboard-actions .btn-continue {
+  flex: 1;
 }
 
 /* ==========================================================================
@@ -1483,6 +1519,29 @@ body.paused #sudoku-board {
   overflow: visible; 
   user-select: none;
   animation: logoPulse 3s infinite ease-in-out;
+}
+
+/* Scaled Retro Logo in Leaderboard Modal */
+.super-sudoku-logo.leaderboard-modal-logo {
+  padding: 8px 18px;
+  margin-bottom: 6px;
+  transform: scale(0.85);
+  box-shadow: 0 0 10px rgba(46, 196, 182, 0.4), inset 0 0 14px rgba(11, 19, 32, 0.9);
+  animation: none;
+}
+
+.leaderboard-modal-logo .line-super {
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.leaderboard-modal-logo .line-sudoku {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.leaderboard-modal-logo .line-arcade {
+  font-size: 10px;
 }
 
 .super-sudoku-logo .logo-line {

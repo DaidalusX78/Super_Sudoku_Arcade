@@ -155,7 +155,7 @@
 
     <div class="title-footer-credit">
       <span class="credit-author">MARC BAILEY 2026</span>
-      <span class="credit-version app-version">v1.9.0</span>
+      <span class="credit-version app-version">v1.10.0</span>
     </div>
   </div>
 
@@ -224,7 +224,7 @@
 
     <div class="menu-drawer-footer">
       <div class="footer-credit-line">Marc Bailey 2026</div>
-      <div class="footer-version-tag app-version" data-prefix="SUPER SUDOKU ARCADE ">SUPER SUDOKU ARCADE v1.9.0</div>
+      <div class="footer-version-tag app-version" data-prefix="SUPER SUDOKU ARCADE ">SUPER SUDOKU ARCADE v1.10.0</div>
     </div>
   </aside>
 
@@ -248,6 +248,13 @@
   <!-- High Scores Leaderboard Modal Overlay -->
   <div class="win-overlay" id="leaderboard-modal" role="dialog" aria-modal="true" aria-label="High scores">
     <div class="arcade-modal-card leaderboard-card">
+      <!-- RETRO STACKED GAME LOGO IN HIGH SCORE TABLE -->
+      <div class="super-sudoku-logo leaderboard-modal-logo">
+        <span class="logo-line line-super">SUPER</span>
+        <span class="logo-line line-sudoku">SUDOKU</span>
+        <span class="logo-line line-arcade">ARCADE</span>
+      </div>
+
       <div class="leaderboard-header">
         <div class="win-text leaderboard-title">HIGH SCORES</div>
         <div class="leaderboard-subtitle">ALL TIME ARCADE RECORDS</div>
@@ -268,6 +275,9 @@
       </div>
 
       <div class="leaderboard-actions">
+        <button class="play-again-btn btn-share-leaderboard" id="share-leaderboard-btn" onclick="shareLeaderboard()" title="Share high scores" aria-label="Share high scores">
+          <span>📤 SHARE SCORES</span>
+        </button>
         <button class="play-again-btn btn-continue" onclick="closeLeaderboardModal()">CLOSE</button>
       </div>
     </div>
