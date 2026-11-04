@@ -1,6 +1,6 @@
 /* ==========================================================================
    SUPER SUDOKU ARCADE - RETRO CABINET & CRT MASTER STYLESHEET
-   Version: 1.7.0 | Created by Marc Bailey 2026
+   Version: 1.8.0 | Created by Marc Bailey 2026
    ========================================================================== */
 
 /* --- 0. Font Imports --- */
@@ -218,7 +218,7 @@ body::after {
 
 .label {
   font-size: 10px;
-  color: #2de2e6;
+  color: #8fa0b5; /* Dimmed titanium silver for clean visual hierarchy */
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: bold;
@@ -640,9 +640,9 @@ body::after {
 
 .action-bar-btn {
   flex: 1;
-  background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
-  border: 2px solid #2de2e6;
-  border-bottom: 4px solid #008b8b;
+  background: linear-gradient(180deg, #1c1830 0%, #0e0c1a 100%);
+  border: 2px solid #3d365e;
+  border-bottom: 4px solid #211c36;
   color: #ffffff !important;
   font-family: inherit;
   font-size: 13px;
@@ -656,10 +656,14 @@ body::after {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: all 0.08s ease;
   user-select: none;
   box-sizing: border-box;
+}
+
+.action-bar-btn:hover {
+  border-color: #5d538c;
 }
 
 .action-bar-btn:active {
@@ -709,10 +713,10 @@ body::after {
 }
 
 .num-btn {
-  background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
-  border: 2px solid #2de2e6;
-  border-bottom: 5px solid #008b8b;
-  color: #f7ede2;
+  background: linear-gradient(180deg, #1c1830 0%, #0f0c1c 100%);
+  border: 2px solid #3d365e;
+  border-bottom: 5px solid #211c36;
+  color: #ffffff;
   font-family: inherit;
   font-size: 24px;
   font-weight: bold;
@@ -724,17 +728,23 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba(45, 226, 230, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: all 0.05s ease-out;
   -webkit-tap-highlight-color: transparent;
+}
+
+.num-btn:hover {
+  border-color: #5d538c;
+  background: linear-gradient(180deg, #241f3d 0%, #141026 100%);
 }
 
 .num-btn:active {
   transform: translateY(3px);
   border-bottom-width: 2px;
-  background: #2de2e6 !important;
-  color: #020205 !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 15px #2de2e6;
+  background: #443c68 !important;
+  border-color: #7266a8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(132, 94, 194, 0.5);
 }
 
 .num-btn.completed {

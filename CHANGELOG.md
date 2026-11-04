@@ -2,6 +2,13 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.8.0] - 2026-11-04
+### Changed
+- **Color Hierarchy & Contrast (Option C)**:
+  - Preserved `#2de2e6` (Neon Cyan) exclusively for the 9×9 Sudoku grid boundaries and placed player digits.
+  - Re-themed the 3×3 numpad buttons and action bar (Glass Pencil) with sleek dark titanium/gunmetal chassis borders (`#3d365e` with deep bevel `#211c36`) and pure `#ffffff` digits.
+  - Softened HUD stat labels (`PLAYER 1`, `STRIKES`, `MULTIPLIER`) to titanium slate silver (`#8fa0b5`) to eliminate cyan visual competition and highlight the playing grid.
+
 ## [1.7.0] - 2026-11-04
 ### Added
 - **Full Screen Toggle**: Added an in-menu testing control (`FULL SCREEN: ON / OFF`) in Cabinet Display section using the HTML5 Fullscreen API with automatic state synchronization.
