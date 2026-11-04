@@ -905,6 +905,7 @@ body::after {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
+  width: 100vw; height: 100dvh;
   background: rgba(2, 2, 5, 0.96);
   display: none;
   flex-direction: column;
@@ -916,6 +917,13 @@ body::after {
 
 .win-overlay.active { display: flex; }
 
+/* Name entry & leaderboard can be opened from the arcade menu (z-index 150/160),
+   so they must stack above the menu backdrop and drawer. */
+#name-modal,
+#leaderboard-modal {
+  z-index: 200;
+}
+
 .win-text {
   font-size: 32px;
   font-weight: bold;
@@ -926,7 +934,6 @@ body::after {
 }
 
 .game-over-title { color: #ff003c; text-shadow: 4px 4px 0px #0b1026; }
-.title-logo { color: #2de2e6; text-shadow: 4px 4px 0px #f15bb5; line-height: 1.1; }
 
 .mode-select-group,
 .game-over-actions,

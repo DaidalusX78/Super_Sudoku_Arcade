@@ -3,26 +3,20 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.1.0';
+const GAME_VERSION = 'v1.1.1';
+
+// Render the single-source version string everywhere it is displayed
+document.querySelectorAll('.app-version').forEach(el => {
+  el.textContent = el.dataset.prefix ? `${el.dataset.prefix}${GAME_VERSION}` : GAME_VERSION;
+});
 
 // --- 1. Audio Synth Engine ---
 let isMuted = localStorage.getItem('superSudokuMuted') === 'true';
 
 function initMuteButton() {
-  const muteBtn = document.getElementById('mute-btn');
   const menuSoundText = document.getElementById('menu-sound-text');
   const menuSoundIcon = document.getElementById('menu-sound-icon');
   const menuMuteBtn = document.getElementById('menu-mute-btn');
-
-  if (muteBtn) {
-    if (isMuted) {
-      muteBtn.innerText = '🔇';
-      muteBtn.classList.add('muted');
-    } else {
-      muteBtn.innerText = '🔊';
-      muteBtn.classList.remove('muted');
-    }
-  }
 
   if (menuSoundText && menuSoundIcon) {
     if (isMuted) {
@@ -402,7 +396,6 @@ let selectedCellIndex = null;
 let gridCells = []; 
 let isGameOver = true; 
 let currentDifficulty = 40; 
-let isExpertMode = false; 
 let currentMode = 'normal';
 let currentSolution = [];
 let cellCenters = [];
@@ -453,10 +446,6 @@ function renderCellNotes(index) {
   });
 }
 
-// Radar Rotation Engine
-let radarAngle = 0;
-let radarInterval = null;
-
 function getCellValue(cell) {
   if (!cell) return '';
   return cell.dataset.value || '';
@@ -499,16 +488,74 @@ function generatePuzzle(difficultyHoles) {
   fillGrid(grid);
   currentSolution = [...grid];
   
+  // Remove cells in random order, keeping a removal only if the puzzle still
+  // has exactly one solution (so every correct move matches currentSolution).
   let puzzle = [...grid];
-  let holes = difficultyHoles;
-  while (holes > 0) {
-    let randomIndex = Math.floor(Math.random() * 81);
-    if (puzzle[randomIndex] !== 0) {
-      puzzle[randomIndex] = 0;
-      holes--;
+  const order = Array.from({ length: 81 }, (_, i) => i).sort(() => Math.random() - 0.5);
+  let holes = 0;
+  for (const idx of order) {
+    if (holes >= difficultyHoles) break;
+    const backup = puzzle[idx];
+    puzzle[idx] = 0;
+    if (countSolutions(puzzle, 2) === 1) {
+      holes++;
+    } else {
+      puzzle[idx] = backup;
     }
   }
   return puzzle;
+}
+
+// Bitmask backtracking solver with minimum-remaining-values heuristic.
+// Counts solutions up to `limit` (stops early).
+function countSolutions(puzzle, limit) {
+  const grid = [...puzzle];
+  const rows = new Array(9).fill(0);
+  const cols = new Array(9).fill(0);
+  const boxes = new Array(9).fill(0);
+
+  for (let i = 0; i < 81; i++) {
+    const v = grid[i];
+    if (v) {
+      const bit = 1 << v;
+      const r = Math.floor(i / 9), c = i % 9;
+      rows[r] |= bit; cols[c] |= bit; boxes[Math.floor(r / 3) * 3 + Math.floor(c / 3)] |= bit;
+    }
+  }
+
+  let count = 0;
+
+  function solve() {
+    let best = -1, bestMask = 0, bestCount = 10;
+    for (let i = 0; i < 81; i++) {
+      if (grid[i] !== 0) continue;
+      const r = Math.floor(i / 9), c = i % 9;
+      const used = rows[r] | cols[c] | boxes[Math.floor(r / 3) * 3 + Math.floor(c / 3)];
+      const avail = ~used & 0x3FE;
+      let n = 0;
+      for (let m = avail; m; m &= m - 1) n++;
+      if (n < bestCount) {
+        best = i; bestMask = avail; bestCount = n;
+        if (n === 0) return;
+        if (n === 1) break;
+      }
+    }
+    if (best === -1) { count++; return; }
+
+    const r = Math.floor(best / 9), c = best % 9, b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+    for (let v = 1; v <= 9 && count < limit; v++) {
+      const bit = 1 << v;
+      if (!(bestMask & bit)) continue;
+      grid[best] = v;
+      rows[r] |= bit; cols[c] |= bit; boxes[b] |= bit;
+      solve();
+      grid[best] = 0;
+      rows[r] &= ~bit; cols[c] &= ~bit; boxes[b] &= ~bit;
+    }
+  }
+
+  solve();
+  return count;
 }
 
 function cacheCellCenters() {
@@ -530,7 +577,6 @@ function startGame(holes, timeInSeconds, mode = 'normal') {
   currentDifficulty = holes; 
   currentDifficultyTime = timeInSeconds; 
   currentMode = mode;
-  isExpertMode = (mode === 'expert');
   
   updateHiScoreHUD();
 
@@ -1001,6 +1047,17 @@ function breakCombo() {
   cancelAnimationFrame(animationFrameId);
 }
 
+// --- Run Finalisation (records the score exactly once per run) ---
+let runRecorded = true; // true until a run starts
+
+function finalizeRun() {
+  if (runRecorded) return { rank: -1, isNewHighScore: false };
+  runRecorded = true;
+  const result = recordScore(currentMode, playerScore);
+  updateHiScoreHUD();
+  return result;
+}
+
 // --- 13. Timer Pause & Resume Utilities ---
 function pauseTimers() {
   clearInterval(mainTimerInterval);
@@ -1008,7 +1065,17 @@ function pauseTimers() {
   cancelAnimationFrame(animationFrameId);
 }
 
+// True while any pause-inducing UI (menu, name entry, leaderboard, quit confirm) is open
+function isPauseUiOpen() {
+  return ['arcade-menu', 'name-modal', 'leaderboard-modal', 'quit-confirm-screen']
+    .some(id => {
+      const el = document.getElementById(id);
+      return el && el.classList.contains('active');
+    });
+}
+
 function resumeTimers() {
+  if (isPauseUiOpen()) return;
   if (!isGameOver) {
     if (currentDifficultyTime > 0 && timeRemaining > 0) {
       clearInterval(mainTimerInterval);
@@ -1039,13 +1106,18 @@ function startContinueCountdown() {
   if (timerDisplay) timerDisplay.innerText = continueCountdown;
 
   continueTimerInterval = setInterval(() => {
+    // Hold the countdown while the user is browsing scores or editing their name
+    if (isPauseUiOpen()) return;
+
     continueCountdown--;
     if (timerDisplay) timerDisplay.innerText = continueCountdown;
 
     if (continueCountdown <= 0) {
       clearInterval(continueTimerInterval);
+      finalizeRun();
       document.getElementById('game-over-screen').classList.remove('active');
       document.getElementById('title-screen').classList.add('active');
+      updateHiScoreHUD();
     }
   }, 1000);
 }
@@ -1086,8 +1158,8 @@ function triggerWin() {
   gridCells.forEach(cell => cell.classList.remove('selected', 'highlighted', 'same-number', 'lighthouse-beam', 'lit', 'pre-lit'));
   selectedCellIndex = null;
 
-  // Record score into leaderboard
-  const result = recordScore(currentMode, playerScore);
+  // Record score into leaderboard (once per run)
+  const result = finalizeRun();
   const winSummary = document.getElementById('win-score-summary');
   if (winSummary) {
     winSummary.innerHTML = `SCORE: ${playerScore.toString().padStart(6, '0')}` + 
@@ -1107,15 +1179,13 @@ function triggerGameOver() {
   gridCells.forEach(cell => cell.classList.remove('selected', 'highlighted', 'same-number', 'lighthouse-beam', 'lit', 'pre-lit'));
   selectedCellIndex = null;
 
-  // Record score into leaderboard
-  const result = recordScore(currentMode, playerScore);
+  // Score is recorded only when the run truly ends (continue declined/expired or quit),
+  // so using CONTINUE never creates duplicate leaderboard entries.
   const gameoverSummary = document.getElementById('gameover-score-summary');
   if (gameoverSummary) {
-    gameoverSummary.innerHTML = `FINAL SCORE: ${playerScore.toString().padStart(6, '0')}` + 
-      (result.rank > 0 ? ` &bull; RANK #${result.rank}` : '');
+    gameoverSummary.innerHTML = `FINAL SCORE: ${playerScore.toString().padStart(6, '0')}`;
   }
 
-  updateHiScoreHUD();
   document.getElementById('game-over-screen').classList.add('active');
   startContinueCountdown();
 }
@@ -1153,6 +1223,7 @@ function quitToMenu() {
   initAudio();
   playSound('move');
   
+  finalizeRun();
   isGameOver = true;
   stopRadarEngine();
   clearInterval(mainTimerInterval);
@@ -1198,6 +1269,8 @@ function quitToMenu() {
 }
 
 function resetGame() {
+  finalizeRun();
+  runRecorded = false;
   clearInterval(continueTimerInterval);
   const quitModal = document.getElementById('quit-confirm-screen');
   if (quitModal) quitModal.classList.remove('active');

@@ -2,6 +2,20 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.1.1] - 2026-11-04
+### Fixed
+- Leaderboard no longer records duplicate entries when using CONTINUE; a score is recorded once per run (win, quit, or continue expiry).
+- Name entry and leaderboard modals now appear above the arcade menu instead of behind its backdrop.
+- Puzzle generator now guarantees a unique solution, so a correct move is never penalised as a strike.
+- Game timers stay paused while any menu/modal is open, and the Game Over continue countdown holds while browsing scores.
+
+### Changed
+- Version string is defined once in sudoku.js and rendered into the UI.
+- Overlays use dynamic viewport height on mobile.
+- Added .gitattributes to normalise line endings.
+
+### Removed
+- Dead code: unused radar/expert variables, legacy mute-button branch, unused .title-logo style.
 ## [1.1.0] - 2026-11-04
 ### Added
 - **Custom Player Name**: Players can customize their pilot callsign/name (defaulting to PLAYER 1) via the HUD, start screen, or arcade menu.
