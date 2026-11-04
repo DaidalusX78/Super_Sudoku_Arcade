@@ -2,6 +2,14 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.4.0] - 2026-11-04
+### Added
+- Visual combo decay indicator: shrinking neon underline under the multiplier value with a pulse warning during the final 2.5 seconds.
+- Time bonus on Stage Clear: awards `+10 pts × seconds remaining` and displays the bonus breakdown on the win screen.
+
+### Changed
+- Grouped HUD, 9x9 board, pencil bar, and numpad in a centered stack (`justify-content: center; gap: 6px`) to eliminate the vertical gap above the numpad on tall screens.
+- Updated erase button to `⌫ ERASE` with larger, higher-contrast text for mobile ergonomics.
 ## [1.3.0] - 2026-11-04
 ### Added
 - Unit tests (`npm test`, Node's built-in runner, no dependencies) for the puzzle generator/solver and leaderboard storage/migration.

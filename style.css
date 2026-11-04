@@ -77,11 +77,11 @@ body::after {
   padding: 4px 10px; /* Reduced vertical padding */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   position: relative;
   background-color: #020205;
-  gap: 4px; /* Tight compact vertical spacing */
+  gap: 6px; /* Cohesive vertical stack without dead space above numpad */
 }
 
 /* --- 4. HUD Header & Stat Displays --- */
@@ -165,6 +165,30 @@ body::after {
 
 .multiplier-element {
   text-align: right;
+  align-items: flex-end;
+}
+
+.combo-value {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 3px;
+}
+
+.combo-value::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  width: calc(var(--combo-pct, 0) * 1%);
+  background: currentColor;
+  border-radius: 2px;
+  box-shadow: 0 0 6px currentColor;
+  transition: width 0.05s linear;
+}
+
+.combo-value.combo-expiring {
+  animation: ledPulse 0.35s infinite alternate;
 }
 
 .label {
@@ -600,7 +624,7 @@ body::after {
   grid-template-columns: repeat(5, 1fr) !important;
   gap: 6px;
   width: 100%;
-  margin-top: auto;
+  margin-top: 2px;
 }
 
 .num-btn {
@@ -635,8 +659,9 @@ body::after {
   border-color: #ff003c;
   border-bottom: 5px solid #a00026;
   color: #ff003c;
-  font-size: 11px;
-  letter-spacing: -0.5px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 4px rgba(255, 0, 60, 0.4);
 }
 
 .num-btn.action-btn:active {

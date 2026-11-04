@@ -3,7 +3,7 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.3.0';
+const GAME_VERSION = 'v1.4.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
@@ -189,6 +189,7 @@ const timeDisplay = document.getElementById('time-display');
 
 let playerScore = 0;
 const BASE_POINTS = 100;
+const TIME_BONUS_PER_SECOND = 10;
 
 let strikes = 0;
 const MAX_STRIKES = 3;
@@ -725,6 +726,17 @@ function gameTimerTick() {
 }
 
 // --- 12. Combo Logic ---
+function renderComboDecay() {
+  if (!comboDisplay) return;
+  const pct = comboTimeLeft > 0 ? Math.max(0, Math.min(100, (comboTimeLeft / COMBO_MAX_TIME) * 100)) : 0;
+  comboDisplay.style.setProperty('--combo-pct', pct.toFixed(1));
+  if (comboTimeLeft > 0 && comboTimeLeft <= 2500) {
+    comboDisplay.classList.add('combo-expiring');
+  } else {
+    comboDisplay.classList.remove('combo-expiring');
+  }
+}
+
 function updateTimer(timestamp) {
   if (!lastFrameTime) lastFrameTime = timestamp;
   const deltaTime = timestamp - lastFrameTime;
@@ -732,6 +744,7 @@ function updateTimer(timestamp) {
 
   if (comboTimeLeft > 0) {
     comboTimeLeft -= deltaTime;
+    renderComboDecay();
     animationFrameId = requestAnimationFrame(updateTimer);
   } else {
     breakCombo();
@@ -759,6 +772,7 @@ function handleCorrectMove(cell) {
   if (currentMultiplier < MAX_MULTIPLIER) currentMultiplier++;
   
   updateComboDisplay();
+  renderComboDecay();
   
   cancelAnimationFrame(animationFrameId);
   animationFrameId = requestAnimationFrame(updateTimer);
@@ -768,6 +782,7 @@ function breakCombo() {
   currentMultiplier = 1;
   comboTimeLeft = 0;
   updateComboDisplay();
+  renderComboDecay();
   cancelAnimationFrame(animationFrameId);
 }
 
@@ -807,6 +822,11 @@ function resumeTimers() {
     if (currentDifficultyTime > 0 && timeRemaining > 0) {
       clearInterval(mainTimerInterval);
       mainTimerInterval = setInterval(gameTimerTick, 1000);
+    }
+    if (comboTimeLeft > 0) {
+      lastFrameTime = performance.now();
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(updateTimer);
     }
     if (currentMode === 'radar') {
       startRadarEngine();
@@ -885,11 +905,19 @@ function triggerWin() {
   gridCells.forEach(cell => cell.classList.remove('selected', 'highlighted', 'same-number', 'lighthouse-beam', 'lit', 'pre-lit'));
   selectedCellIndex = null;
 
+  // Award time bonus on stage clear (+10 pts per second remaining)
+  const timeBonus = Math.max(0, timeRemaining) * TIME_BONUS_PER_SECOND;
+  if (timeBonus > 0) {
+    playerScore += timeBonus;
+    updateScore();
+  }
+
   // Record score into leaderboard (once per run)
   const result = finalizeRun();
   const winSummary = document.getElementById('win-score-summary');
   if (winSummary) {
-    winSummary.innerHTML = `SCORE: ${playerScore.toString().padStart(6, '0')}` + 
+    const bonusText = timeBonus > 0 ? ` (TIME BONUS +${timeBonus})` : '';
+    winSummary.innerHTML = `SCORE: ${playerScore.toString().padStart(6, '0')}${bonusText}` + 
       (result.rank > 0 ? ` &bull; RANK #${result.rank} ${result.isNewHighScore ? '🔥 NEW RECORD!' : ''}` : '');
   }
 

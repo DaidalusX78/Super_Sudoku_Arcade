@@ -17,7 +17,8 @@ Open `index.html` (studio intro, then **PLAY**) or `super_sudoku_arcade.html` di
 Puzzles always have a unique solution; Expert/Radar request 60 holes but typically get 58-60 because very sparse unique puzzles are rare.
 
 ## Rules & scoring
-- Correct entries score 100 x multiplier (x1 to x4); the multiplier rises per correct move and resets on a mistake or after 10 s idle.
+- Correct entries score 100 x multiplier (x1 to x4); the multiplier rises per correct move (with a shrinking underline timer) and resets on a mistake or after 10 s idle.
+- Clearing a stage awards a time bonus of +10 points per second remaining.
 - 3 strikes or running out of time ends the run; CONTINUE (9 s countdown) resets strikes and adds time.
 - Each run is recorded once on each difficulty's top-5 leaderboard (win, quit, or continue expiry).
 
