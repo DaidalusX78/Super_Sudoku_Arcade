@@ -3,7 +3,7 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.1.1';
+const GAME_VERSION = 'v1.2.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
@@ -155,63 +155,65 @@ function savePlayerName() {
 }
 
 // --- 3. High Scores Leaderboard Engine ---
-const DEFAULT_LEADERBOARDS = {
-  easy: [
-    { name: 'MCB', score: 14500, date: '2026' },
-    { name: 'ARC', score: 11200, date: '2026' },
-    { name: 'NEO', score: 9800, date: '2026' },
-    { name: 'JED', score: 8500, date: '2026' },
-    { name: 'ACE', score: 7200, date: '2026' }
-  ],
-  normal: [
-    { name: 'MCB', score: 18200, date: '2026' },
-    { name: 'VEX', score: 14000, date: '2026' },
-    { name: 'RET', score: 12500, date: '2026' },
-    { name: 'CYB', score: 10400, date: '2026' },
-    { name: 'ZED', score: 9100, date: '2026' }
-  ],
-  hard: [
-    { name: 'MCB', score: 22800, date: '2026' },
-    { name: 'KOR', score: 17500, date: '2026' },
-    { name: 'BLZ', score: 15300, date: '2026' },
-    { name: 'MAX', score: 13000, date: '2026' },
-    { name: 'SYN', score: 11200, date: '2026' }
-  ],
-  expert: [
-    { name: 'MCB', score: 28500, date: '2026' },
-    { name: 'GHO', score: 21000, date: '2026' },
-    { name: 'DRK', score: 18400, date: '2026' },
-    { name: 'VOID', score: 16000, date: '2026' },
-    { name: 'NULL', score: 13500, date: '2026' }
-  ],
-  radar: [
-    { name: 'MCB', score: 25000, date: '2026' },
-    { name: 'SWP', score: 19800, date: '2026' },
-    { name: 'BEAM', score: 16500, date: '2026' },
-    { name: 'ECHO', score: 14200, date: '2026' },
-    { name: 'PULSE', score: 12000, date: '2026' }
-  ]
+const LEADERBOARD_MODES = ['easy', 'normal', 'hard', 'expert', 'radar'];
+const LEADERBOARD_SIZE = 5;
+
+// Placeholder entries shipped in v1.1.0/v1.1.1. They are purged on first load
+// of v1.2.0 so leaderboards only ever contain real scores.
+const LEGACY_SEEDED_SCORES = {
+  easy: [['MCB', 14500], ['ARC', 11200], ['NEO', 9800], ['JED', 8500], ['ACE', 7200]],
+  normal: [['MCB', 18200], ['VEX', 14000], ['RET', 12500], ['CYB', 10400], ['ZED', 9100]],
+  hard: [['MCB', 22800], ['KOR', 17500], ['BLZ', 15300], ['MAX', 13000], ['SYN', 11200]],
+  expert: [['MCB', 28500], ['GHO', 21000], ['DRK', 18400], ['VOID', 16000], ['NULL', 13500]],
+  radar: [['MCB', 25000], ['SWP', 19800], ['BEAM', 16500], ['ECHO', 14200], ['PULSE', 12000]]
 };
+
+function emptyLeaderboards() {
+  const boards = {};
+  LEADERBOARD_MODES.forEach(mode => { boards[mode] = []; });
+  return boards;
+}
 
 function getLeaderboards() {
   try {
     const data = localStorage.getItem('superSudokuLeaderboards');
     if (data) {
       const parsed = JSON.parse(data);
-      // Ensure all modes exist
-      ['easy', 'normal', 'hard', 'expert', 'radar'].forEach(mode => {
-        if (!parsed[mode] || !Array.isArray(parsed[mode])) {
-          parsed[mode] = [...DEFAULT_LEADERBOARDS[mode]];
-        }
+      LEADERBOARD_MODES.forEach(mode => {
+        if (!parsed[mode] || !Array.isArray(parsed[mode])) parsed[mode] = [];
       });
       return parsed;
     }
   } catch (e) {
     console.error('Failed to parse leaderboard data:', e);
   }
-  return JSON.parse(JSON.stringify(DEFAULT_LEADERBOARDS));
+  return emptyLeaderboards();
 }
 
+// One-time migration: purge placeholder scores and carry over the old
+// single (mode-less) high score. It is placed on NORMAL since the old
+// version never recorded which mode it came from.
+function migrateLegacyData() {
+  if (localStorage.getItem('superSudokuMigratedV120')) return;
+
+  const boards = getLeaderboards();
+  LEADERBOARD_MODES.forEach(mode => {
+    const seeded = LEGACY_SEEDED_SCORES[mode];
+    boards[mode] = boards[mode].filter(entry =>
+      !seeded.some(([name, score]) => entry.name === name && entry.score === score));
+  });
+
+  const legacyHigh = parseInt(localStorage.getItem('superSudokuHighScore'), 10);
+  if (legacyHigh > 0) {
+    boards.normal.push({ name: (playerName || 'PLAYER 1').toUpperCase(), score: legacyHigh, date: '2026' });
+    boards.normal.sort((a, b) => b.score - a.score);
+    boards.normal = boards.normal.slice(0, LEADERBOARD_SIZE);
+  }
+
+  saveLeaderboards(boards);
+  localStorage.removeItem('superSudokuHighScore');
+  localStorage.setItem('superSudokuMigratedV120', 'true');
+}
 function saveLeaderboards(boards) {
   try {
     localStorage.setItem('superSudokuLeaderboards', JSON.stringify(boards));
@@ -240,7 +242,7 @@ function recordScore(mode, score) {
 
   list.push(entry);
   list.sort((a, b) => b.score - a.score);
-  const trimmed = list.slice(0, 5);
+  const trimmed = list.slice(0, LEADERBOARD_SIZE);
   boards[mode] = trimmed;
   saveLeaderboards(boards);
 
@@ -280,23 +282,30 @@ function switchLeaderboardTab(diff) {
   if (!listContainer) return;
 
   listContainer.innerHTML = '';
-  entries.forEach((entry, idx) => {
+  for (let idx = 0; idx < LEADERBOARD_SIZE; idx++) {
+    const entry = entries[idx];
     const rankNum = idx + 1;
     const row = document.createElement('div');
-    row.className = `leaderboard-row rank-${rankNum}`;
+    row.className = `leaderboard-row rank-${rankNum}` + (entry ? '' : ' empty');
     
     let rankLabel = `#${rankNum}`;
     if (rankNum === 1) rankLabel = '1ST';
     if (rankNum === 2) rankLabel = '2ND';
     if (rankNum === 3) rankLabel = '3RD';
 
-    row.innerHTML = `
+    row.innerHTML = entry
+      ? `
       <span class="rank-badge">${rankLabel}</span>
       <span class="leader-name">${escapeHtml(entry.name)}</span>
       <span class="leader-score">${entry.score.toString().padStart(6, '0')}</span>
+    `
+      : `
+      <span class="rank-badge">${rankLabel}</span>
+      <span class="leader-name">---</span>
+      <span class="leader-score">------</span>
     `;
     listContainer.appendChild(row);
-  });
+  }
 }
 
 function closeLeaderboardModal() {
@@ -1060,6 +1069,8 @@ function finalizeRun() {
 
 // --- 13. Timer Pause & Resume Utilities ---
 function pauseTimers() {
+  // Hide the board while paused so the puzzle can't be studied for free
+  if (!isGameOver) document.body.classList.add('paused');
   clearInterval(mainTimerInterval);
   stopRadarEngine();
   cancelAnimationFrame(animationFrameId);
@@ -1076,6 +1087,7 @@ function isPauseUiOpen() {
 
 function resumeTimers() {
   if (isPauseUiOpen()) return;
+  document.body.classList.remove('paused');
   if (!isGameOver) {
     if (currentDifficultyTime > 0 && timeRemaining > 0) {
       clearInterval(mainTimerInterval);
@@ -1225,6 +1237,7 @@ function quitToMenu() {
   
   finalizeRun();
   isGameOver = true;
+  document.body.classList.remove('paused');
   stopRadarEngine();
   clearInterval(mainTimerInterval);
   clearInterval(continueTimerInterval);
@@ -1409,6 +1422,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Boot Initializers
+migrateLegacyData();
 initMuteButton();
 updatePlayerNameDisplay();
 updateHiScoreHUD();

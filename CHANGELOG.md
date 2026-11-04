@@ -2,6 +2,14 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.2.0] - 2026-11-04
+### Changed
+- Leaderboards start empty (placeholder scores removed); empty slots show as `---`.
+- Board is blurred while the game is paused (menu or dialogs open) so the puzzle can't be studied for free.
+
+### Added
+- One-time migration: placeholder scores from v1.1.x are purged and the old single high score is moved to the NORMAL leaderboard.
+- README.md with gameplay, controls and project structure.
 ## [1.1.1] - 2026-11-04
 ### Fixed
 - Leaderboard no longer records duplicate entries when using CONTINUE; a score is recorded once per run (win, quit, or continue expiry).
