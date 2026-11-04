@@ -2,6 +2,14 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.9.0] - 2026-11-04
+### Changed
+- **Comprehensive Synthwave / Cyberpunk Theme Harmonization**:
+  - **Level Select Screen**: Restyled difficulty buttons (`.btn-easy` in cyan, `.btn-normal` in amber/gold, `.btn-hard` in hot magenta, `.btn-expert` in deep violet, `.btn-radar` in indigo) with dark arcade chassis gradients. Updated title player card with arcade violet borders, electric lavender tags, and hot pink accents.
+  - **Arcade Menu Drawer**: Styled drawer with deep violet borders (`#845ec2`), neon pink accents (`#ff4d94`), hot pink action buttons (`#f15bb5`), and electric lavender typography (`#d1b3ff`).
+  - **Hi-Score Leaderboard Pop-up**: Overhauled modal card with arcade violet borders, hot-pink titles (`#f15bb5`), neon violet category tabs (`.tab-btn`), and rank-specific neon accents (Gold #ffb703, Magenta #f15bb5, Cyan #2de2e6).
+  - **Modals & Overlays**: Harmonized Name Input modal, Game Over screen, and Quit Confirmation dialogs with the unified synthwave aesthetic.
+
 ## [1.8.0] - 2026-11-04
 ### Changed
 - **Color Hierarchy & Contrast (Option B: Synthwave / Cyberpunk)**:

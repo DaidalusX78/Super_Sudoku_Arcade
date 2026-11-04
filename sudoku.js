@@ -3,7 +3,7 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.8.0';
+const GAME_VERSION = 'v1.9.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
