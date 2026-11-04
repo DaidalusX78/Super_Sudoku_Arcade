@@ -1047,6 +1047,8 @@ body::after {
   margin: 4px 0 8px 0;
   letter-spacing: 1px;
   text-shadow: 0 0 6px #ffb703;
+  text-align: center;
+  line-height: 1.5;
 }
 
 /* Title Screen Styling */
