@@ -3,7 +3,7 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.6.0';
+const GAME_VERSION = 'v1.7.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
@@ -19,7 +19,7 @@ function updatePlayerNameDisplay() {
   const menuPlayer = document.getElementById('menu-player-display');
   
   const displayName = playerName.toUpperCase().trim() || 'PLAYER 1';
-  if (hudPlayer) hudPlayer.innerText = `${displayName} ✎`;
+  if (hudPlayer) hudPlayer.innerText = displayName;
   if (titlePlayer) titlePlayer.innerText = displayName;
   if (menuPlayer) menuPlayer.innerText = displayName;
 }
@@ -157,6 +157,7 @@ function openArcadeMenu() {
   // Timer does not stop when opening the menu during gameplay to prevent cheating
   updatePlayerNameDisplay();
   initMuteButton();
+  updateFullscreenButton();
 
   const resumeBtn = document.querySelector('.menu-resume-btn');
   if (resumeBtn) {
@@ -168,6 +169,34 @@ function openArcadeMenu() {
   if (menu) menu.classList.add('active');
   if (backdrop) backdrop.classList.add('active');
 }
+
+function toggleFullScreen() {
+  initAudio();
+  playSound('move');
+  if (!document.fullscreenElement) {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.warn('Fullscreen request:', err);
+      });
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen().catch(err => {
+        console.warn('Exit fullscreen:', err);
+      });
+    }
+  }
+}
+
+function updateFullscreenButton() {
+  const text = document.getElementById('menu-fullscreen-text');
+  const icon = document.getElementById('menu-fullscreen-icon');
+  const isFS = Boolean(document.fullscreenElement);
+  if (text) text.innerText = isFS ? 'FULL SCREEN: ON' : 'FULL SCREEN: OFF';
+  if (icon) icon.innerText = isFS ? '🗗' : '⛶';
+}
+
+document.addEventListener('fullscreenchange', updateFullscreenButton);
 
 function closeArcadeMenu() {
   initAudio();

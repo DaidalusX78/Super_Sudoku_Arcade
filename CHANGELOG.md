@@ -2,6 +2,14 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.7.0] - 2026-11-04
+### Added
+- **Full Screen Toggle**: Added an in-menu testing control (`FULL SCREEN: ON / OFF`) in Cabinet Display section using the HTML5 Fullscreen API with automatic state synchronization.
+
+### Changed
+- **Pencil Icon Removed from HUD**: Removed the `✎` icon next to the player name display in the in-game HUD (`PLAYER 1`) for a cleaner header while keeping the name clickable for edits.
+- **Minimalist Menu Icon Button**: Removed the word "MENU" from the HUD button, displaying only the 3-line hamburger icon (`☰`) scaled to 26px (matching the digital clock font size) with borders and box-shadows removed.
+
 ## [1.6.0] - 2026-11-04
 ### Added
 - **Authentic 1980s LED Clock Font**: Integrated offline `DSEG7 Classic` 7-segment digital font for the digital countdown clock (`fonts/DSEG7Classic-Regular.woff2`, SIL OFL 1.1).

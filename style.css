@@ -1,6 +1,6 @@
 /* ==========================================================================
    SUPER SUDOKU ARCADE - RETRO CABINET & CRT MASTER STYLESHEET
-   Version: 1.6.0 | Created by Marc Bailey 2026
+   Version: 1.7.0 | Created by Marc Bailey 2026
    ========================================================================== */
 
 /* --- 0. Font Imports --- */
@@ -273,41 +273,51 @@ body::after {
 }
 
 .hud-icon-btn {
-  background: #0d0b18;
-  border: 1px solid #2de2e6;
+  background: transparent;
+  border: none !important;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 26px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 0 6px;
   color: #ffffff !important;
-  box-shadow: 0 3px 0 #008b8b;
+  box-shadow: none !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: normal;
   height: 38px;
   box-sizing: border-box;
 }
 
 .hud-icon-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #008b8b;
+  transform: scale(0.92);
+  box-shadow: none !important;
 }
 
 .hud-menu-btn {
   font-family: inherit;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 1px;
+  font-size: 26px !important; /* Matches .digital-clock font size */
+  line-height: 1;
   color: #ffffff !important;
-  border-color: #2de2e6 !important;
-  box-shadow: 0 3px 0 #008b8b !important;
-  padding: 4px 10px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 6px;
   height: 38px;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.hud-menu-btn:hover {
+  opacity: 0.8;
+}
+
+.hud-menu-btn:active {
+  transform: scale(0.92);
 }
 
 .floating-score {

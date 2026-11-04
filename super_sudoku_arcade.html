@@ -29,7 +29,7 @@
 
       <!-- Arcade Controls -->
       <div class="hud-btn-group">
-        <button id="menu-btn" class="hud-icon-btn hud-menu-btn" onclick="toggleArcadeMenu()" title="Arcade Menu" aria-label="Open arcade menu" aria-haspopup="dialog" aria-controls="arcade-menu">☰ MENU</button>
+        <button id="menu-btn" class="hud-icon-btn hud-menu-btn" onclick="toggleArcadeMenu()" title="Arcade Menu" aria-label="Open arcade menu" aria-haspopup="dialog" aria-controls="arcade-menu">☰</button>
       </div>
     </div>
 
@@ -37,7 +37,7 @@
     <div class="hud stats-hud-row">
       <div class="hud-element player-element">
         <span class="label player-name-label" id="player-name-display" onclick="openNameModal()" title="Click to Change Name" role="button" tabindex="0" aria-label="Change player name">
-          PLAYER 1 ✎
+          PLAYER 1
         </span>
         <span class="value" id="score-display">000000</span>
       </div>
@@ -155,7 +155,7 @@
 
     <div class="title-footer-credit">
       <span class="credit-author">MARC BAILEY 2026</span>
-      <span class="credit-version app-version">v1.6.0</span>
+      <span class="credit-version app-version">v1.7.0</span>
     </div>
   </div>
 
@@ -198,6 +198,15 @@
         </button>
       </div>
 
+      <!-- Cabinet Display / Fullscreen -->
+      <div class="menu-section">
+        <span class="menu-section-label">CABINET DISPLAY</span>
+        <button id="menu-fullscreen-btn" class="menu-action-btn" onclick="toggleFullScreen()" aria-label="Toggle Full Screen">
+          <span class="menu-btn-icon" id="menu-fullscreen-icon">⛶</span>
+          <span id="menu-fullscreen-text">FULL SCREEN: OFF</span>
+        </button>
+      </div>
+
       <!-- Quit to Menu -->
       <div class="menu-section">
         <span class="menu-section-label">CABINET CONTROLS</span>
@@ -215,7 +224,7 @@
 
     <div class="menu-drawer-footer">
       <div class="footer-credit-line">Marc Bailey 2026</div>
-      <div class="footer-version-tag app-version" data-prefix="SUPER SUDOKU ARCADE ">SUPER SUDOKU ARCADE v1.6.0</div>
+      <div class="footer-version-tag app-version" data-prefix="SUPER SUDOKU ARCADE ">SUPER SUDOKU ARCADE v1.7.0</div>
     </div>
   </aside>
 
