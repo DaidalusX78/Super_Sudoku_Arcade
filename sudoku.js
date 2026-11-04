@@ -3,7 +3,7 @@
 // Version: 1.1.0 | Created by Marc Bailey 2026
 // ==========================================================================
 
-const GAME_VERSION = 'v1.5.0';
+const GAME_VERSION = 'v1.6.0';
 
 // Render the single-source version string everywhere it is displayed
 document.querySelectorAll('.app-version').forEach(el => {
@@ -154,7 +154,7 @@ function toggleArcadeMenu() {
 }
 
 function openArcadeMenu() {
-  pauseTimers();
+  // Timer does not stop when opening the menu during gameplay to prevent cheating
   updatePlayerNameDisplay();
   initMuteButton();
 
@@ -262,6 +262,10 @@ function renderCellNotes(index) {
   if (!notesContainer) return;
 
   const notes = cellNotes[index];
+  const hasActiveNotes = Boolean(notes && notes.size > 0);
+  // Toggle .has-notes so the cell border remains #ffff33 until all notes are cleared
+  cell.classList.toggle('has-notes', hasActiveNotes);
+
   const slots = notesContainer.querySelectorAll('.note-slot');
   slots.forEach(slot => {
     const num = parseInt(slot.dataset.note, 10);
@@ -811,9 +815,10 @@ function pauseTimers() {
   cancelAnimationFrame(animationFrameId);
 }
 
-// True while any pause-inducing UI (menu, name entry, leaderboard, quit confirm) is open
+// True while any pause-inducing modal UI (name entry, leaderboard, quit confirm) is open.
+// Note: 'arcade-menu' intentionally does not pause the in-game timer to prevent cheating.
 function isPauseUiOpen() {
-  return ['arcade-menu', 'name-modal', 'leaderboard-modal', 'quit-confirm-screen']
+  return ['name-modal', 'leaderboard-modal', 'quit-confirm-screen']
     .some(id => {
       const el = document.getElementById(id);
       return el && el.classList.contains('active');

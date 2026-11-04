@@ -1,12 +1,13 @@
 /* ==========================================================================
    SUPER SUDOKU ARCADE - RETRO CABINET & CRT MASTER STYLESHEET
-   Version: 1.1.0 | Created by Marc Bailey 2026
+   Version: 1.6.0 | Created by Marc Bailey 2026
    ========================================================================== */
 
 /* --- 0. Font Imports --- */
 /* Bundled fonts (SIL Open Font License) - no network needed */
 @font-face { font-family: 'VT323'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/VT323.woff2') format('woff2'); }
 @font-face { font-family: 'Press Start 2P'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/PressStart2P.woff2') format('woff2'); }
+@font-face { font-family: 'DSEG7 Classic'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/DSEG7Classic-Regular.woff2') format('woff2'); }
 
 :root {
   --neon-orange: #ff9f1c;
@@ -114,7 +115,24 @@ body::after {
 .stats-hud-row {
   border: none !important;
   box-shadow: none !important;
-  padding: 2px 6px;
+  padding: 3px 6px;
+  min-height: 54px;
+}
+
+/* Doubled Stats HUD Row elements for enhanced visibility */
+.stats-hud-row .label {
+  font-size: 18px !important;
+  letter-spacing: 1px;
+}
+
+.stats-hud-row .player-name-label {
+  font-size: 18px !important;
+}
+
+.stats-hud-row .value {
+  font-size: 28px !important;
+  line-height: 1.1;
+  margin-top: 2px;
 }
 
 .clock-group {
@@ -213,16 +231,16 @@ body::after {
   margin-top: 1px;
 }
 
-/* ENLARGED RED 7-SEGMENT DIGITAL LED CLOCK */
+/* ENLARGED RED 7-SEGMENT DIGITAL LED CLOCK (Authentic 1980s Retro LED Font & Normal Weight) */
 .digital-clock {
-  font-family: 'VT323', 'Courier New', monospace;
-  font-size: 34px; /* Enlarged for instant readability */
-  font-weight: bold;
+  font-family: 'DSEG7 Classic', 'VT323', monospace;
+  font-size: 26px; /* Optimized scale for 7-segment digital LED clock */
+  font-weight: normal; /* Removed bold font-weight for authentic LED appearance */
   line-height: 1;
   color: #ff003c;
   letter-spacing: 2px;
   background-color: #05020a;
-  padding: 2px 8px;
+  padding: 0 10px;
   border-radius: 4px;
   border: 1px solid #ff003c;
   text-shadow: 0 0 6px #ff003c, 0 0 14px rgba(255, 0, 60, 0.8);
@@ -230,6 +248,8 @@ body::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 38px; /* Matched exactly to hud-btn-group for symmetry */
+  box-sizing: border-box;
 }
 
 .digital-clock.danger-pulse {
@@ -248,6 +268,8 @@ body::after {
   display: flex;
   gap: 6px;
   align-items: center;
+  height: 38px; /* Symmetrical height with .digital-clock */
+  box-sizing: border-box;
 }
 
 .hud-icon-btn {
@@ -257,12 +279,14 @@ body::after {
   font-size: 14px;
   cursor: pointer;
   padding: 4px 8px;
-  color: #f7ede2;
+  color: #ffffff !important;
   box-shadow: 0 3px 0 #008b8b;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  height: 38px;
+  box-sizing: border-box;
 }
 
 .hud-icon-btn:active {
@@ -272,13 +296,18 @@ body::after {
 
 .hud-menu-btn {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   letter-spacing: 1px;
-  color: #2de2e6 !important;
+  color: #ffffff !important;
   border-color: #2de2e6 !important;
   box-shadow: 0 3px 0 #008b8b !important;
-  padding: 4px 8px;
+  padding: 4px 10px;
+  height: 38px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .floating-score {
@@ -306,10 +335,10 @@ body::after {
 .combo-value.mult-3 { color: #f15bb5; text-shadow: 0 0 6px #f15bb5; }
 .combo-value.mult-4 { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
 
-.strike-tracker { display: flex; gap: 6px; align-items: center; justify-content: center; margin-top: 1px; }
+.strike-tracker { display: flex; gap: 8px; align-items: center; justify-content: center; margin-top: 2px; }
 .strike-box {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   border: 2px solid #ff003c;
   border-radius: 4px;
   background: #0d0b18;
@@ -317,7 +346,7 @@ body::after {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 18px;
   color: #ff003c;
   box-shadow: inset 0 0 4px #000;
 }
@@ -428,8 +457,8 @@ body::after {
   font-size: 13px;
   font-weight: bold;
   line-height: 1;
-  color: #ffff33 !important;
-  text-shadow: 0 0 4px #ffff33, 0 0 8px rgba(255, 255, 51, 0.95), 1px 1px 1px rgba(0,0,0,0.8) !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 4px #ffffff, 0 0 8px rgba(255, 255, 255, 0.95), 1px 1px 1px rgba(0,0,0,0.8) !important;
   opacity: 0;
   visibility: hidden;
   user-select: none;
@@ -438,6 +467,13 @@ body::after {
 .note-slot.active {
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* Yellow border #ffff33 on cell whenever notes are present, until all notes are removed */
+.cell.has-notes,
+.cell:has(.note-slot.active) {
+  border: 1.5px solid #ffff33 !important;
+  box-shadow: inset 0 0 4px rgba(255, 255, 51, 0.35) !important;
 }
 
 /* ==========================================================================
@@ -589,6 +625,7 @@ body::after {
   justify-content: center;
   gap: 6px;
   margin: 2px 0;
+  min-height: 52px; /* Doubled action bar height */
 }
 
 .action-bar-btn {
@@ -596,12 +633,13 @@ body::after {
   background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
   border: 2px solid #2de2e6;
   border-bottom: 4px solid #008b8b;
-  color: #2de2e6;
+  color: #ffffff !important;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: bold;
   letter-spacing: 1px;
-  padding: 6px 10px;
+  padding: 12px 10px; /* Doubled padding for double action bar height */
+  min-height: 52px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
@@ -611,6 +649,7 @@ body::after {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   transition: all 0.08s ease;
   user-select: none;
+  box-sizing: border-box;
 }
 
 .action-bar-btn:active {
@@ -630,10 +669,10 @@ body::after {
 .action-bar-btn.erase-btn {
   border-color: #ff003c;
   border-bottom-color: #a00026;
-  color: #ff003c;
-  font-size: 11px;
+  color: #ffffff !important;
+  font-size: 13px;
   letter-spacing: 0.5px;
-  text-shadow: 0 0 4px rgba(255, 0, 60, 0.4);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
 }
 
 .action-bar-btn.erase-btn:active {
@@ -703,7 +742,7 @@ body::after {
   line-height: 1;
 }
 
-/* ENLARGED NUMPAD BADGE (Brought above all effects with explicit high z-index) */
+/* ENLARGED NUMPAD BADGE (Brought above all effects with explicit high z-index & pure #ffffff text) */
 .badge {
   position: absolute;
   z-index: 50; /* Explicitly above CRT scanline layer (z-index: 30) */
@@ -711,7 +750,7 @@ body::after {
   right: 6px;
   font-size: 14px; /* Enlarged for instant clarity */
   font-weight: 900;
-  color: #ff4d94;
+  color: #ffffff !important;
   line-height: 1;
   background: rgba(13, 11, 24, 0.95);
   border: 1px solid rgba(241, 91, 181, 0.8);
@@ -719,7 +758,7 @@ body::after {
   padding: 2px 5px;
   min-width: 18px;
   text-align: center;
-  text-shadow: 0 0 4px #ff4d94, 1px 1px 2px #000;
+  text-shadow: 0 0 4px #ffffff, 1px 1px 2px #000 !important;
   box-shadow: 0 0 6px rgba(255, 77, 148, 0.5);
 }
 

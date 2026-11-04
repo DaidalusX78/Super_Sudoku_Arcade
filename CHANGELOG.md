@@ -2,7 +2,18 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
-## [1.5.0] - 2026-11-04
+## [1.6.0] - 2026-11-04
+### Added
+- **Authentic 1980s LED Clock Font**: Integrated offline `DSEG7 Classic` 7-segment digital font for the digital countdown clock (`fonts/DSEG7Classic-Regular.woff2`, SIL OFL 1.1).
+- **Persistent Yellow Note Highlight**: Added `#ffff33` border (`.cell.has-notes`) on any cell containing active pencil notes that persists until all notes in that cell are erased or completed.
+
+### Changed
+- **Doubled Stats HUD Elements**: Doubled the font sizes and dimensions of `.stats-hud-row` elements (labels at 18px, values at 28px, strike boxes doubled to 28×28px).
+- **Anti-Cheat Continuous Timer**: Opening the Arcade Menu during an active game session no longer stops or freezes the countdown timer, keeping the clock ticking down to prevent cheating.
+- **Pure White Contrast (`#ffffff`)**: Updated `.hud-menu-btn`, `.action-bar-btn`, `.action-bar-btn.erase-btn`, `.note-slot`, and `.badge` to high-visibility `#ffffff`.
+- **Clock Font-Weight & Styling**: Removed bold font-weight from `.digital-clock` to accurately replicate retro red quartz/LED clock displays.
+- **Doubled Action Bar Height**: Doubled the action bar and button heights (`min-height: 52px; padding: 12px 10px`) for improved touch ergonomics.
+- **Symmetric Top HUD Alignment**: Matched the height of `.digital-clock` and `.hud-btn-group` to 38px for clean, pixel-perfect symmetry.
 ### Added
 - **Title Screen Menu Access**: Added direct access to the Arcade Menu from the Title Screen via a dedicated `☰ ARCADE MENU` button.
 

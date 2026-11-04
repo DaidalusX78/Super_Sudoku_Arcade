@@ -31,7 +31,7 @@ Puzzles always have a unique solution; Expert/Radar request 60 holes but typical
 | Backspace / Delete | Erase |
 | Esc | Quit confirmation / close dialogs |
 
-The **MENU** button opens the arcade drawer (sound, player name, high scores, quit). Opening any menu pauses the game and blurs the board.
+The **MENU** button opens the arcade drawer (sound, player name, high scores, quit). To prevent cheating, the in-game countdown timer continues counting down while the drawer is open.
 
 ## Project structure
 - `index.html`, `logo.css`, `logo.js` - studio intro
@@ -40,7 +40,7 @@ The **MENU** button opens the arcade drawer (sound, player name, high scores, qu
 - `leaderboard.js` - leaderboard storage and migration (pure logic)
 - `audio.js` - synthesised sound effects and sound setting
 - `sudoku.js` - game engine and UI
-- `fonts/` - bundled VT323 and Press Start 2P (SIL Open Font License)
+- `fonts/` - bundled VT323, Press Start 2P, and DSEG7 Classic (SIL Open Font License)
 - `tests/` - unit tests
 - `radar_demo.html` - standalone radar prototype
 - `VERSION`, `CHANGELOG.md` - versioning (semantic; the UI version comes from `GAME_VERSION` in `sudoku.js`)
