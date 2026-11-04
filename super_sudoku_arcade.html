@@ -63,15 +63,19 @@
   <!-- 9x9 Board -->
   <div class="board" id="sudoku-board" role="group" aria-label="Sudoku board"></div>
 
-  <!-- Action Bar: Glass Pencil Notes Toggle -->
+  <!-- Action Bar: Glass Pencil Notes & Erase -->
   <div class="action-bar">
     <button class="action-bar-btn notes-btn" id="notes-btn" onclick="toggleNotesMode()" title="Toggle Glass Pencil (Hotkeys: N or Shift+1-9)">
       <span class="action-btn-icon">✏️</span>
-      <span class="action-btn-text">GLASS PENCIL NOTES: <span id="notes-indicator">OFF</span></span>
+      <span class="action-btn-text">GLASS PENCIL: <span id="notes-indicator">OFF</span></span>
+    </button>
+    <button class="action-bar-btn erase-btn num-btn action-btn" aria-label="Erase cell" onclick="handleInput('clear')">
+      <span class="action-btn-icon">⌫</span>
+      <span class="action-btn-text">ERASE [X]</span>
     </button>
   </div>
 
-  <!-- Thumb Zone Controls with Enlarged Digit Badges -->
+  <!-- Thumb Zone Controls: 3x3 Numeric Keypad -->
   <div class="numpad">
     <button class="num-btn" data-num="1"><span class="btn-digit">1</span><span class="badge" id="badge-1">9</span></button>
     <button class="num-btn" data-num="2"><span class="btn-digit">2</span><span class="badge" id="badge-2">9</span></button>
@@ -82,7 +86,6 @@
     <button class="num-btn" data-num="7"><span class="btn-digit">7</span><span class="badge" id="badge-7">9</span></button>
     <button class="num-btn" data-num="8"><span class="btn-digit">8</span><span class="badge" id="badge-8">9</span></button>
     <button class="num-btn" data-num="9"><span class="btn-digit">9</span><span class="badge" id="badge-9">9</span></button>
-    <button class="num-btn action-btn" aria-label="Erase cell">⌫ ERASE</button>
   </div>
 
   <!-- Win Screen Overlay -->
@@ -147,6 +150,7 @@
 
     <div class="title-bottom-actions">
       <button class="arcade-title-btn" onclick="openLeaderboardModal()">🏆 HIGH SCORES</button>
+      <button class="arcade-title-btn btn-title-menu" onclick="openArcadeMenu()" aria-label="Open arcade menu">☰ ARCADE MENU</button>
     </div>
 
     <div class="title-footer-credit">

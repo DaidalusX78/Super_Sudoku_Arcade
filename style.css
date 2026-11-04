@@ -37,14 +37,14 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Move cabinet & HUD right to the top */
   overflow: hidden;
   position: relative;
-  padding: 2px 0; /* Minimized vertical padding for max screen real estate */
+  padding: 0; /* Minimal padding */
 }
 
 /* ==========================================================================
-   2. CRT MONITOR OVERLAY & SCANLINE SIMULATOR
+   2. CRT MONITOR OVERLAY & SCANLINE SIMULATOR (Reduced by 20% for readability)
    ========================================================================== */
 
 body::after {
@@ -52,19 +52,19 @@ body::after {
   display: block;
   position: fixed;
   top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
-              radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.6) 100%);
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
+              radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.48) 100%);
   background-size: 100% 4px, 100% 100%;
   z-index: 30; /* CRT Phosphor/Scanline layer */
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 0.68; /* Reduced by 20% from 0.85 */
   animation: crtFlicker 0.15s infinite;
 }
 
 @keyframes crtFlicker {
-  0% { opacity: 0.82; }
-  50% { opacity: 0.88; }
-  100% { opacity: 0.84; }
+  0% { opacity: 0.65; }
+  50% { opacity: 0.70; }
+  100% { opacity: 0.67; }
 }
 
 /* --- 3. Main Cabinet Layout Container --- */
@@ -74,14 +74,14 @@ body::after {
   height: 100vh;
   height: 100dvh;
   max-height: 850px;
-  padding: 4px 10px; /* Reduced vertical padding */
+  padding: 2px 8px 4px 8px; /* Minimal padding at top for HUD docking */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Pinned to top of screen */
   align-items: center;
   position: relative;
   background-color: #020205;
-  gap: 6px; /* Cohesive vertical stack without dead space above numpad */
+  gap: 4px;
 }
 
 /* --- 4. HUD Header & Stat Displays --- */
@@ -89,7 +89,8 @@ body::after {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  margin-top: 0;
 }
 
 .hud {
@@ -99,7 +100,7 @@ body::after {
   width: 100%;
   background: #0d0b18;
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 2px 6px; /* Minimal HUD padding */
 }
 
 /* Border Removed from top-hud-row and stats-hud-row */
@@ -107,11 +108,13 @@ body::after {
   border: none !important;
   box-shadow: none !important;
   margin-bottom: 0px;
+  padding: 2px 6px;
 }
 
 .stats-hud-row {
   border: none !important;
   box-shadow: none !important;
+  padding: 2px 6px;
 }
 
 .clock-group {
@@ -120,11 +123,15 @@ body::after {
   gap: 6px;
 }
 
+/* Doubled font-size from 11px to 22px */
+.label.hi-score-label,
 .hi-score-label {
   color: #f15bb5;
-  font-size: 11px;
+  font-size: 22px !important;
+  font-weight: bold;
   cursor: pointer;
   transition: opacity 0.15s ease;
+  line-height: 1;
 }
 .hi-score-label:hover {
   opacity: 0.8;
@@ -580,11 +587,12 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   margin: 2px 0;
 }
 
 .action-bar-btn {
-  width: 100%;
+  flex: 1;
   background: linear-gradient(180deg, #181528 0%, #0d0b18 100%);
   border: 2px solid #2de2e6;
   border-bottom: 4px solid #008b8b;
@@ -599,7 +607,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   transition: all 0.08s ease;
   user-select: none;
@@ -619,11 +627,35 @@ body::after {
   text-shadow: 0 0 6px #ffff33;
 }
 
+.action-bar-btn.erase-btn {
+  border-color: #ff003c;
+  border-bottom-color: #a00026;
+  color: #ff003c;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 4px rgba(255, 0, 60, 0.4);
+}
+
+.action-bar-btn.erase-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  background: #ff003c !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px #ff003c;
+}
+
+/* 3 x 3 NUMPAD LAYOUT - Larger buttons fitting available cabinet space */
 .numpad {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-rows: repeat(3, 1fr) !important;
   gap: 6px;
   width: 100%;
+  flex: 1;
+  max-height: 240px;
+  min-height: 140px;
+  position: relative;
+  z-index: 35; /* Above CRT layer */
   margin-top: 2px;
 }
 
@@ -633,12 +665,13 @@ body::after {
   border-bottom: 5px solid #008b8b;
   color: #f7ede2;
   font-family: inherit;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
-  padding: 8px 0;
+  padding: 6px 0;
   border-radius: 8px;
   cursor: pointer;
   position: relative;
+  z-index: 35; /* Above CRT scanlines at z-index 30 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -655,23 +688,6 @@ body::after {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 15px #2de2e6;
 }
 
-.num-btn.action-btn {
-  border-color: #ff003c;
-  border-bottom: 5px solid #a00026;
-  color: #ff003c;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 4px rgba(255, 0, 60, 0.4);
-}
-
-.num-btn.action-btn:active {
-  transform: translateY(3px);
-  border-bottom-width: 2px;
-  background: #ff003c !important;
-  color: #ffffff !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 15px #ff003c;
-}
-
 .num-btn.completed {
   opacity: 0.25 !important;
   border-color: #444 !important;
@@ -682,28 +698,29 @@ body::after {
 }
 
 .btn-digit {
-  font-size: 20px;
+  font-size: 26px; /* Increased digit size for 3x3 layout */
   font-weight: bold;
   line-height: 1;
 }
 
-/* ENLARGED NUMPAD BADGE (Noticeably bigger & high contrast) */
+/* ENLARGED NUMPAD BADGE (Brought above all effects with explicit high z-index) */
 .badge {
   position: absolute;
-  top: 2px;
-  right: 4px;
-  font-size: 13px; /* Enlarged from 10px */
+  z-index: 50; /* Explicitly above CRT scanline layer (z-index: 30) */
+  top: 3px;
+  right: 6px;
+  font-size: 14px; /* Enlarged for instant clarity */
   font-weight: 900;
   color: #ff4d94;
   line-height: 1;
-  background: rgba(13, 11, 24, 0.92);
-  border: 1px solid rgba(241, 91, 181, 0.7);
+  background: rgba(13, 11, 24, 0.95);
+  border: 1px solid rgba(241, 91, 181, 0.8);
   border-radius: 4px;
-  padding: 2px 4px;
-  min-width: 16px;
+  padding: 2px 5px;
+  min-width: 18px;
   text-align: center;
   text-shadow: 0 0 4px #ff4d94, 1px 1px 2px #000;
-  box-shadow: 0 0 6px rgba(255, 77, 148, 0.4);
+  box-shadow: 0 0 6px rgba(255, 77, 148, 0.5);
 }
 
 /* ==========================================================================
@@ -1091,25 +1108,36 @@ body::after {
 }
 
 .title-bottom-actions {
+  display: flex;
+  gap: 8px;
   margin-top: 10px;
   width: 85%;
-  max-width: 300px;
+  max-width: 320px;
 }
 
 .arcade-title-btn {
-  width: 100%;
+  flex: 1;
   background: #181528;
   border: 2px solid #ffb703;
   border-bottom: 4px solid #aa7700;
   color: #ffb703;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
-  padding: 8px 12px;
+  padding: 8px 6px;
   border-radius: 6px;
   cursor: pointer;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   box-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.arcade-title-btn.btn-title-menu {
+  border-color: #2de2e6 !important;
+  border-bottom-color: #008b8b !important;
+  color: #2de2e6 !important;
+  box-shadow: 0 0 10px rgba(45, 226, 230, 0.3) !important;
 }
 
 .arcade-title-btn:active {

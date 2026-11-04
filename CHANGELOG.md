@@ -2,6 +2,18 @@
 
 All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
+## [1.5.0] - 2026-11-04
+### Added
+- **Title Screen Menu Access**: Added direct access to the Arcade Menu from the Title Screen via a dedicated `☰ ARCADE MENU` button.
+
+### Changed
+- **3x3 Numpad Layout**: Converted the numeric keypad into an authentic 3x3 layout (digits 1–9) with enlarged digit labels (26px) that expand to comfortably fill available space.
+- **Glass Pencil & Erase Action Bar**: Moved the `⌫ ERASE` action alongside `GLASS PENCIL` in the action bar directly above the 3x3 numpad.
+- **Badge Layering**: Increased the digit remaining `.badge` `z-index` to 50 (above the CRT layer and board effects) for crystal-clear visibility.
+- **Reduced CRT Overlay**: Decreased the CRT scanline and vignette overlay intensity by 20% (`opacity: 0.68`) to improve overall screen clarity and contrast.
+- **Top-Docked Minimal HUD**: Pinned `top-hud-row` and `stats-hud-row` directly to the top of the screen with minimal 2px padding.
+- **Doubled HI-SCORE Size**: Doubled the font-size of `.hi-score-label` from 11px to 22px for instant high-visibility arcade scoring.
+
 ## [1.4.0] - 2026-11-04
 ### Added
 - Visual combo decay indicator: shrinking neon underline under the multiplier value with a pulse warning during the final 2.5 seconds.
