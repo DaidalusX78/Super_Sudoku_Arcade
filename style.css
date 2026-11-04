@@ -218,7 +218,7 @@ body::after {
 
 .label {
   font-size: 10px;
-  color: #8fa0b5; /* Dimmed titanium silver for clean visual hierarchy */
+  color: #d1b3ff; /* Synthwave electric soft lavender/violet */
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: bold;
@@ -640,9 +640,9 @@ body::after {
 
 .action-bar-btn {
   flex: 1;
-  background: linear-gradient(180deg, #1c1830 0%, #0e0c1a 100%);
-  border: 2px solid #3d365e;
-  border-bottom: 4px solid #211c36;
+  background: linear-gradient(180deg, #24143d 0%, #120924 100%);
+  border: 2px solid #845ec2;
+  border-bottom: 4px solid #512da8;
   color: #ffffff !important;
   font-family: inherit;
   font-size: 13px;
@@ -656,14 +656,15 @@ body::after {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px rgba(132, 94, 194, 0.25);
   transition: all 0.08s ease;
   user-select: none;
   box-sizing: border-box;
 }
 
 .action-bar-btn:hover {
-  border-color: #5d538c;
+  border-color: #a27ee0;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6), 0 0 14px rgba(162, 126, 224, 0.4);
 }
 
 .action-bar-btn:active {
@@ -681,20 +682,21 @@ body::after {
 }
 
 .action-bar-btn.erase-btn {
-  border-color: #ff003c;
-  border-bottom-color: #a00026;
+  border-color: #ff0055;
+  border-bottom-color: #a00036;
   color: #ffffff !important;
   font-size: 13px;
   letter-spacing: 0.5px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px rgba(255, 0, 85, 0.3);
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
 }
 
 .action-bar-btn.erase-btn:active {
   transform: translateY(2px);
   border-bottom-width: 2px;
-  background: #ff003c !important;
+  background: #ff0055 !important;
   color: #ffffff !important;
-  box-shadow: 0 0 12px #ff003c;
+  box-shadow: 0 0 14px #ff0055;
 }
 
 /* 3 x 3 NUMPAD LAYOUT - Larger buttons fitting available cabinet space */
@@ -713,9 +715,9 @@ body::after {
 }
 
 .num-btn {
-  background: linear-gradient(180deg, #1c1830 0%, #0f0c1c 100%);
-  border: 2px solid #3d365e;
-  border-bottom: 5px solid #211c36;
+  background: linear-gradient(180deg, #24143d 0%, #120924 100%);
+  border: 2px solid #845ec2;
+  border-bottom: 5px solid #512da8;
   color: #ffffff;
   font-family: inherit;
   font-size: 24px;
@@ -728,23 +730,24 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7), 0 0 10px rgba(132, 94, 194, 0.3);
   transition: all 0.05s ease-out;
   -webkit-tap-highlight-color: transparent;
 }
 
 .num-btn:hover {
-  border-color: #5d538c;
-  background: linear-gradient(180deg, #241f3d 0%, #141026 100%);
+  border-color: #a27ee0;
+  background: linear-gradient(180deg, #2e1a4e 0%, #180d2e 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 14px rgba(162, 126, 224, 0.45);
 }
 
 .num-btn:active {
   transform: translateY(3px);
   border-bottom-width: 2px;
-  background: #443c68 !important;
-  border-color: #7266a8 !important;
+  background: #845ec2 !important;
+  border-color: #b39ddb !important;
   color: #ffffff !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(132, 94, 194, 0.5);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 18px #845ec2;
 }
 
 .num-btn.completed {

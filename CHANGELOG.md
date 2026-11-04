@@ -4,10 +4,11 @@ All notable changes to **Super Sudoku Arcade** will be documented in this file.
 
 ## [1.8.0] - 2026-11-04
 ### Changed
-- **Color Hierarchy & Contrast (Option C)**:
+- **Color Hierarchy & Contrast (Option B: Synthwave / Cyberpunk)**:
   - Preserved `#2de2e6` (Neon Cyan) exclusively for the 9×9 Sudoku grid boundaries and placed player digits.
-  - Re-themed the 3×3 numpad buttons and action bar (Glass Pencil) with sleek dark titanium/gunmetal chassis borders (`#3d365e` with deep bevel `#211c36`) and pure `#ffffff` digits.
-  - Softened HUD stat labels (`PLAYER 1`, `STRIKES`, `MULTIPLIER`) to titanium slate silver (`#8fa0b5`) to eliminate cyan visual competition and highlight the playing grid.
+  - Re-themed the 3×3 numpad buttons and action bar (Glass Pencil) with deep arcade violet borders (`#845ec2` with beveled 3D base `#512da8`) and neon violet glow on hover and press.
+  - Styled the Erase button with neon magenta/pink-red (`#ff0055` / `#a00036`) for sharp functional contrast.
+  - Tuned HUD stat labels (`PLAYER 1`, `STRIKES`, `MULTIPLIER`) to electric soft synthwave lavender (`#d1b3ff`) to complement the cyan board without visual fatigue.
 
 ## [1.7.0] - 2026-11-04
 ### Added
