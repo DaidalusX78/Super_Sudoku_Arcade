@@ -2,6 +2,13 @@
 
 A retro arcade take on Sudoku: neon CRT visuals, combo scoring, strikes, per-difficulty leaderboards and two twist modes. Plain HTML/CSS/JS, no build step.
 
+This is still a work in progress as my family enjoy playing the game! There are still a number of bugs which i am working through. 
+
+Currently the game is browser only but it has issues on Firefox.
+
+
+---
+
 ## Run
 Open `index.html` (studio intro, then **PLAY**) or `super_sudoku_arcade.html` directly in a browser.
 

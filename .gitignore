@@ -9,3 +9,6 @@ desktop.ini
 
 # Logs
 *.log
+
+# Private local notes
+sudoku.md
